@@ -82,6 +82,8 @@ exports.tutor_update_post = function(req, res, next) {
             tutor.lessons.subjects = req.body.lessons.subjects;
             tutor.lessons.location = req.body.lessons.location;
             tutor.lessons.time = req.body.lessons.time;
+            tutor.lessons.min_wage = req.body.lessons.min_wage;
+            tutor.self_introduction = req.body.self_introduction;
 
             tutor.save()
                 .then(tutor => {

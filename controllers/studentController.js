@@ -76,6 +76,8 @@ exports.student_update_post = function(req, res, next) {
             student.phone_number = req.body.phone_number;
             student.lessons.subjects = req.body.lessons.subjects;
             student.lessons.location = req.body.lessons.location;
+            student.lessons.max_wage = req.body.lessons.max_wage;
+            student.description_of_needs = req.body.description_of_needs;
 
             student.save()
                 .then(student => {

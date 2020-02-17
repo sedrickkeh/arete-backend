@@ -15,8 +15,10 @@ var TutorSchema = new Schema(
         lessons: {
             subjects: [],
             location: {type:String, required:true},
-            time: {type:String, required:true}
-        }
+            time: [],
+            min_wage: {type:Number, required:true}
+        },
+        self_introduction: {type:String, required:true}
     }
 );
 

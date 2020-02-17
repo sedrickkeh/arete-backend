@@ -14,7 +14,9 @@ var StudentSchema = new Schema(
         lessons: {
             subjects: [],
             location: {type:String, required:true},
-        }
+            max_wage: {type:Number}
+        },
+        description_of_needs: {type:String}
     }
 );
 
