@@ -1,7 +1,11 @@
 # Arete Backend
 
+Server is running at arete-backend-api.herokuapp.com
+
+To run locally:
+
 ```
-npm init 
+npm install 
 ```
 to download dependencies.
 
