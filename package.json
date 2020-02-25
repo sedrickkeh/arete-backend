@@ -1,6 +1,9 @@
 {
   "name": "arete-backend",
   "version": "0.0.0",
+  "engines": {
+    "node": "10.18.1"
+  },
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
