@@ -11,6 +11,16 @@ exports.student_list = function(req, res, next) {
         });
 };
 
+exports.student_list_page = function(req, res, next) {
+    var page_limit = 10;
+    var skip_num = (req.params.page-1) * page_limit;
+    Student.find().skip(skip_num).limit(page_limit)
+        .exec(function(err, list_students) {
+            if (err) {return next(err);}
+            res.json(list_students);
+        });
+};
+
 exports.student_detail = function(req, res, next) {
     Student.findById(req.params.id)
         .exec(function(err, student) {

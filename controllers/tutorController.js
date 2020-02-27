@@ -15,6 +15,16 @@ exports.tutor_list = function(req, res, next) {
         });
 };
 
+exports.tutor_list_page = function(req, res, next) {
+    var page_limit = 10;
+    var skip_num = (req.params.page-1) * page_limit;
+    Tutor.find().skip(skip_num).limit(page_limit)
+        .exec(function(err, list_tutors) {
+            if (err) {return next(err);}
+            res.json(list_tutors);
+        });
+};
+
 exports.tutor_detail = function(req, res, next) {
     Tutor.findById(req.params.id)
         .exec(function(err, tutor) {
