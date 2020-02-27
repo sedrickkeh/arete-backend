@@ -107,7 +107,6 @@ exports.job_update_post = function(req, res, next) {
             job.type = req.body.type;
             job.updated_date = Date.now();
             job.description = req.body.description;
-            job.is_active = req.body.is_active;
 
             job.save()
                 .then(job => {
