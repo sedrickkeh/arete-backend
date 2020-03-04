@@ -1,11 +1,11 @@
 var Job = require('../models/job');
-var async = require('async');
+var {success} = require('../tools/responseSender')
 
 exports.job_list = function(req, res, next) {
     Job.find()
         .exec(function(err, list_jobs) {
             if (err) {return next(err);}
-            res.json(list_jobs);
+            res.json(success(list_jobs));
         });
 };
 
@@ -15,7 +15,7 @@ exports.job_list_page = function(req, res, next) {
     Job.find().skip(skip_num).limit(page_limit)
         .exec(function(err, list_jobs) {
             if (err) {return next(err);}
-            res.json(list_jobs);
+            res.json(success(list_jobs));
         });
 };
 
@@ -23,7 +23,7 @@ exports.get_active = function(req, res, next) {
     Job.find({is_active:true})
         .exec(function(err, list_jobs) {
             if (err) {return next(err);}
-            res.json(list_jobs);
+            res.json(success(list_jobs));
         });
 };
 
@@ -33,7 +33,7 @@ exports.get_active_page = function(req, res, next) {
     Job.find({"is_active":true}).skip(skip_num).limit(page_limit)
         .exec(function(err, list_jobs) {
             if (err) {return next(err);}
-            res.json(list_jobs);
+            res.json(success(list_jobs));
         });
 };
 
@@ -46,7 +46,7 @@ exports.job_detail = function(req, res, next) {
                 err.status = 404;
                 return next(err);
             } 
-            res.json(job);
+            res.json(success(job));
         });
 };
 
@@ -66,7 +66,7 @@ exports.job_create_post = function(req, res, next) {
     });
     job.save()
         .then(job => {
-            res.status(200).json({'status': 'created successfully', 'job': job});
+            res.status(200).json(success(job, "Create successful"));
         })
         .catch(err => {
             res.status(400).send('creating failed');
@@ -80,7 +80,7 @@ exports.job_delete_get = function(req, res, next) {
 exports.job_delete_post = function(req, res, next) {
     Job.findByIdAndRemove(req.params.id, function deleteJob(err) {
         if (err) {return next(err);}
-        res.status(200).json({'status': 'deleted successfully'});
+        res.status(200).json(success("", "Delete successful"));
     });
 };
 
@@ -93,7 +93,7 @@ exports.job_update_get = function(req, res, next) {
                 err.status = 404;
                 return next(err);
             } 
-            res.json(job);
+            res.json(success(job));
         });
 };
 
@@ -110,7 +110,7 @@ exports.job_update_post = function(req, res, next) {
 
             job.save()
                 .then(job => {
-                    res.status(200).json({'status': 'updated successfully', 'job': job});
+                    res.status(200).json(success(job, "Update successful"));
                 })
                 .catch(err => {
                     res.status(400).send('Updating failed');
@@ -130,7 +130,7 @@ exports.deactivate = function(req, res, next) {
             job.updated_date = Date.now();
             job.save()
                 .then(job => {
-                    res.status(200).json({'status': 'successfully deactivated', 'job': job});
+                    res.status(200).json(success(job, "Deactivate successful"));
                 })
                 .catch(err => {
                     res.status(400).send('Deactivation failed');
@@ -150,7 +150,7 @@ exports.activate = function(req, res, next) {
             job.updated_date = Date.now();
             job.save()
                 .then(job => {
-                    res.status(200).json({'status': 'successfully activated', 'job': job});
+                    res.status(200).json(success(job, "Activate successful"));
                 })
                 .catch(err => {
                     res.status(400).send('Activation failed');

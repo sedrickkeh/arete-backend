@@ -1,13 +1,11 @@
 var Student = require('../models/student');
-
-var async = require('async');
-
+var {success} = require('../tools/responseSender')
 
 exports.student_list = function(req, res, next) {
     Student.find()
         .exec(function(err, list_students) {
             if (err) {return next(err);}
-            res.json(list_students);
+            res.json(success(list_students));
         });
 };
 
@@ -17,7 +15,7 @@ exports.student_list_page = function(req, res, next) {
     Student.find().skip(skip_num).limit(page_limit)
         .exec(function(err, list_students) {
             if (err) {return next(err);}
-            res.json(list_students);
+            res.json(success(list_students));
         });
 };
 
@@ -30,7 +28,7 @@ exports.student_detail = function(req, res, next) {
                 err.status = 404;
                 return next(err);
             } 
-            res.json(student);
+            res.json(success(student));
         });
 };
 
@@ -42,7 +40,7 @@ exports.student_create_post = function(req, res, next) {
     var student = new Student(req.body);
     student.save()
         .then(student => {
-            res.status(200).json({'status': 'created successfully', 'student': student});
+            res.status(200).json(success(student, "Create successful"));
         })
         .catch(err => {
             res.status(400).send('creating failed');
@@ -56,7 +54,7 @@ exports.student_delete_get = function(req, res, next) {
 exports.student_delete_post = function(req, res, next) {
     Student.findByIdAndRemove(req.params.id, function deleteStudent(err) {
         if (err) {return next(err);}
-        res.status(200).json({'status': 'deleted successfully'});
+        res.status(200).json(success("", "Delete successful"));
     });
 };
 
@@ -69,7 +67,7 @@ exports.student_update_get = function(req, res, next) {
                 err.status = 404;
                 return next(err);
             } 
-            res.json(student);
+            res.json(success(student));
         });
 };
 
@@ -91,7 +89,7 @@ exports.student_update_post = function(req, res, next) {
 
             student.save()
                 .then(student => {
-                    res.status(200).json({'status': 'updated successfully', 'student': student});
+                    res.status(200).json(success(student, "Update successful"));
                 })
                 .catch(err => {
                     res.status(400).send('Updating failed');
