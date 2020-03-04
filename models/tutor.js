@@ -3,6 +3,7 @@ var Schema = mongoose.Schema;
 
 var TutorSchema = new Schema(
     {
+        tutorImage: {type:String, required:false},
         name: {type:String, required:true},
         gender: {type:String, required:true},
         university: {type:String, required:true},

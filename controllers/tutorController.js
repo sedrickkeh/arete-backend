@@ -1,19 +1,43 @@
 var Tutor = require('../models/tutor');
+var multer = require('multer');
 var {success} = require('../tools/responseSender')
 
-exports.index = function(req, res, next) {
-    res.send('NOT IMPLEMENTED');
+var storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, './images/');
+    },
+
+    filename: (req, file, cb) => {
+        cb(null, new Date().toISOString() + file.originalname)
+    }
+});
+
+var imageFileFilter = (req, file, cb) => {
+    if(!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
+        return cb(new Error('You can upload only image files!'), false);
+    }
+    cb(null, true);
 };
 
-exports.tutor_list = function(req, res, next) {
+const upload = multer({ 
+    storage: storage, 
+    limits: {fileSize: 1024 * 1024 * 5}, 
+    fileFilter: imageFileFilter
+});
+
+exports.index = ((req, res, next) => {
+    res.send('NOT IMPLEMENTED');
+});
+
+exports.tutor_list = ((req, res, next) => {
     Tutor.find()
         .exec(function(err, list_tutors) {
             if (err) {return next(err);}
             res.json(success({data:list_tutors}));
         });
-};
+});
 
-exports.tutor_list_page = function(req, res, next) {
+exports.tutor_list_page = ((req, res, next) => {
     var per_page = parseInt(req.query.limit) || 10;
     var page_num = parseInt(req.query.page) || 1;
     var to_skip = (page_num-1) * per_page;
@@ -23,9 +47,9 @@ exports.tutor_list_page = function(req, res, next) {
             list_tutors_page = page(list_tutors, page_num, per_page);
             res.json(success(list_tutors_page));
         });
-};
+});
 
-exports.tutor_detail = function(req, res, next) {
+exports.tutor_detail = ((req, res, next) => {
     Tutor.findById(req.params.id)
         .exec(function(err, tutor) {
             if (err) { return next(err); }
@@ -36,13 +60,13 @@ exports.tutor_detail = function(req, res, next) {
             } 
             res.json(success({data:list_tutors}));
         });
-};
+});
 
-exports.tutor_create_get = function(req, res, next) {
+exports.tutor_create_get = ((req, res, next) => {
     res.send('Create GET not needed at this point');
-};
+});
 
-exports.tutor_create_post = function(req, res, next) {
+exports.tutor_create_post = ((req, res, next) =>{
     var tutor = new Tutor(req.body);
     tutor.save()
         .then(tutor => {
@@ -51,20 +75,20 @@ exports.tutor_create_post = function(req, res, next) {
         .catch(err => {
             res.status(400).send('creating failed');
         });
-};
+});
 
-exports.tutor_delete_get = function(req, res, next) {
+exports.tutor_delete_get = ((req, res, next) => {
     res.send('Delete GET not needed at this point');
-};
+});
 
-exports.tutor_delete_post = function(req, res, next) {
+exports.tutor_delete_post = ((req, res, next) => {
     Tutor.findByIdAndRemove(req.params.id, function deleteTutor(err) {
         if (err) {return next(err);}
         res.status(200).json(success({data:""}, "Delete successful"));
     });
-};
+});
 
-exports.tutor_update_get = function(req, res, next) {
+exports.tutor_update_get = ((req, res, next) => {
     Tutor.findById(req.params.id)
         .exec(function(err, tutor) {
             if (err) { return next(err); }
@@ -75,13 +99,14 @@ exports.tutor_update_get = function(req, res, next) {
             } 
             res.json(success({data:tutor}));
         });
-};
+});
 
-exports.tutor_update_post = function(req, res, next) {
+exports.tutor_update_post = (upload.single('imageFile'), (req, res, next) => {
     Tutor.findById(req.params.id, function(err, tutor) {
         if (!tutor) {
             res.status(404).send("Tutor not found.");
         } else {
+            tutor.tutorImage = req.file.path
             tutor.name = req.body.name;
             tutor.gender = req.body.gender;
             tutor.university = req.body.university;
@@ -104,5 +129,5 @@ exports.tutor_update_post = function(req, res, next) {
                 });
         }
     })
-};
+});
 
