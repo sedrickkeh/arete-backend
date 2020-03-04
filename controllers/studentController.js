@@ -5,7 +5,7 @@ exports.student_list = function(req, res, next) {
     Student.find()
         .exec(function(err, list_students) {
             if (err) {return next(err);}
-            res.json(success(list_students));
+            res.json(success({data:list_students}));
         });
 };
 
@@ -15,7 +15,7 @@ exports.student_list_page = function(req, res, next) {
     Student.find().skip(skip_num).limit(page_limit)
         .exec(function(err, list_students) {
             if (err) {return next(err);}
-            res.json(success(list_students));
+            res.json(success({data:list_students}));
         });
 };
 
@@ -28,7 +28,7 @@ exports.student_detail = function(req, res, next) {
                 err.status = 404;
                 return next(err);
             } 
-            res.json(success(student));
+            res.json(success({data:student}));
         });
 };
 
@@ -40,7 +40,7 @@ exports.student_create_post = function(req, res, next) {
     var student = new Student(req.body);
     student.save()
         .then(student => {
-            res.status(200).json(success(student, "Create successful"));
+            res.status(200).json(success({data:student}, "Create successful"));
         })
         .catch(err => {
             res.status(400).send('creating failed');
@@ -54,7 +54,7 @@ exports.student_delete_get = function(req, res, next) {
 exports.student_delete_post = function(req, res, next) {
     Student.findByIdAndRemove(req.params.id, function deleteStudent(err) {
         if (err) {return next(err);}
-        res.status(200).json(success("", "Delete successful"));
+        res.status(200).json(success({data:""}, "Delete successful"));
     });
 };
 
@@ -67,7 +67,7 @@ exports.student_update_get = function(req, res, next) {
                 err.status = 404;
                 return next(err);
             } 
-            res.json(success(student));
+            res.json(success({data:student}));
         });
 };
 
@@ -89,7 +89,7 @@ exports.student_update_post = function(req, res, next) {
 
             student.save()
                 .then(student => {
-                    res.status(200).json(success(student, "Update successful"));
+                    res.status(200).json(success({data:student}, "Update successful"));
                 })
                 .catch(err => {
                     res.status(400).send('Updating failed');
