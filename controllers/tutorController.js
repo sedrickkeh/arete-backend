@@ -1,7 +1,6 @@
 var Tutor = require('../models/tutor');
-var {success} = require('../tools/responseSender')
-
 var multer = require('multer');
+var {success} = require('../tools/responseSender')
 
 var storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -105,6 +104,7 @@ exports.tutor_update_post = (upload.single('imageFile'), (req, res, next) => {
         if (!tutor) {
             res.status(404).send("Tutor not found.");
         } else {
+            tutor.tutorImage = req.file.path
             tutor.name = req.body.name;
             tutor.gender = req.body.gender;
             tutor.university = req.body.university;
