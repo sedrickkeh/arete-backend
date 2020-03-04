@@ -10,12 +10,14 @@ exports.student_list = function(req, res, next) {
 };
 
 exports.student_list_page = function(req, res, next) {
-    var page_limit = 10;
-    var skip_num = (req.params.page-1) * page_limit;
-    Student.find().skip(skip_num).limit(page_limit)
+    var per_page = parseInt(req.query.limit) || 10;
+    var page_num = parseInt(req.query.page) || 1;
+    var to_skip = (page_num-1) * per_page;
+    Student.find().skip(to_skip).limit(per_page)
         .exec(function(err, list_students) {
             if (err) {return next(err);}
-            res.json(success({data:list_students}));
+            list_students_page = page(list_students, page_num, per_page);
+            res.json(success(list_students_page));
         });
 };
 

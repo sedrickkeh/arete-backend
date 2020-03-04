@@ -5,10 +5,10 @@ var job_controller = require('../controllers/jobController');
 
 router.get('/', job_controller.job_list);
 
-router.get('/list', job_controller.job_list);
-router.get('/list/:page', job_controller.job_list_page);
-router.get('/active', job_controller.get_active);
-router.get('/active/:page', job_controller.get_active_page);
+router.get('/list/all', job_controller.job_list);
+router.get('/list/', job_controller.job_list_page);
+router.get('/active/all', job_controller.get_active);
+router.get('/active/', job_controller.get_active_page);
 
 router.get('/create', job_controller.job_create_get);
 router.post('/create', job_controller.job_create_post);

@@ -1,5 +1,6 @@
 var Job = require('../models/job');
 var {success} = require('../tools/responseSender')
+var {page} = require('../tools/pageInfo')
 
 exports.job_list = function(req, res, next) {
     Job.find()
@@ -10,12 +11,14 @@ exports.job_list = function(req, res, next) {
 };
 
 exports.job_list_page = function(req, res, next) {
-    var page_limit = 10;
-    var skip_num = (req.params.page-1) * page_limit;
-    Job.find().skip(skip_num).limit(page_limit)
+    var per_page = parseInt(req.query.limit) || 10;
+    var page_num = parseInt(req.query.page) || 1;
+    var to_skip = (page_num-1) * per_page;
+    Job.find().skip(to_skip).limit(per_page)
         .exec(function(err, list_jobs) {
             if (err) {return next(err);}
-            res.json(success({data:list_jobs}));
+            list_jobs_page = page(list_jobs, page_num, per_page);
+            res.json(success(list_jobs_page));
         });
 };
 
@@ -28,12 +31,14 @@ exports.get_active = function(req, res, next) {
 };
 
 exports.get_active_page = function(req, res, next) {
-    var page_limit = 10;
-    var skip_num = (req.params.page-1) * page_limit;
-    Job.find({"is_active":true}).skip(skip_num).limit(page_limit)
+    var per_page = parseInt(req.query.limit) || 10;
+    var page_num = parseInt(req.query.page) || 1;
+    var to_skip = (page_num-1) * per_page;
+    Job.find({"is_active":true}).skip(to_skip).limit(per_page)
         .exec(function(err, list_jobs) {
             if (err) {return next(err);}
-            res.json(success({data:list_jobs}));
+            list_jobs_page = page(list_jobs, page_num, per_page);
+            res.json(success(list_jobs_page));
         });
 };
 

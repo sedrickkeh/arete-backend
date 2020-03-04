@@ -14,12 +14,14 @@ exports.tutor_list = function(req, res, next) {
 };
 
 exports.tutor_list_page = function(req, res, next) {
-    var page_limit = 10;
-    var skip_num = (req.params.page-1) * page_limit;
-    Tutor.find().skip(skip_num).limit(page_limit)
+    var per_page = parseInt(req.query.limit) || 10;
+    var page_num = parseInt(req.query.page) || 1;
+    var to_skip = (page_num-1) * per_page;
+    Tutor.find().skip(to_skip).limit(per_page)
         .exec(function(err, list_tutors) {
             if (err) {return next(err);}
-            res.json(success({data:list_tutors}));
+            list_tutors_page = page(list_tutors, page_num, per_page);
+            res.json(success(list_tutors_page));
         });
 };
 

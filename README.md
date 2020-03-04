@@ -19,12 +19,13 @@ This runs the files with nodemon so live changes are reflected.
 - [x] Database pagination
 - [x] Make endpoints for looking for students/tutors
 - [ ] Create API Tests
-- [ ] **Allow storing images**
-- [ ] **Response Sender middleware**
-- [ ] **Pagination Response middleware**
+- [x] Allow storing images
+- [x] Response Sender function
+- [x] Pagination Response function
 - [ ] Use PUT / DELETE API calls properly
 - [ ] Clean up the unnecessarily files that were created by default
 - [ ] Centralized Error Handling
 - [ ] User Authentication
 - [ ] Sanitize Fields
 - [ ] Logs, compression, other deployment things
+- [ ] **Add last_page in pagination**
