@@ -1,7 +1,5 @@
 var Tutor = require('../models/tutor');
-var Student = require('../models/student');
-
-var async = require('async');
+var {success} = require('../tools/responseSender')
 
 exports.index = function(req, res, next) {
     res.send('NOT IMPLEMENTED');
@@ -11,7 +9,7 @@ exports.tutor_list = function(req, res, next) {
     Tutor.find()
         .exec(function(err, list_tutors) {
             if (err) {return next(err);}
-            res.json(list_tutors);
+            res.json(success(list_tutors));
         });
 };
 
@@ -21,7 +19,7 @@ exports.tutor_list_page = function(req, res, next) {
     Tutor.find().skip(skip_num).limit(page_limit)
         .exec(function(err, list_tutors) {
             if (err) {return next(err);}
-            res.json(list_tutors);
+            res.json(success(list_tutors));
         });
 };
 
@@ -34,7 +32,7 @@ exports.tutor_detail = function(req, res, next) {
                 err.status = 404;
                 return next(err);
             } 
-            res.json(tutor);
+            res.json(success(list_tutors));
         });
 };
 
@@ -46,7 +44,7 @@ exports.tutor_create_post = function(req, res, next) {
     var tutor = new Tutor(req.body);
     tutor.save()
         .then(tutor => {
-            res.status(200).json({'status': 'created successfully', 'tutor': req.body});
+            res.status(200).json(success(req.body));
         })
         .catch(err => {
             res.status(400).send('creating failed');
@@ -60,7 +58,7 @@ exports.tutor_delete_get = function(req, res, next) {
 exports.tutor_delete_post = function(req, res, next) {
     Tutor.findByIdAndRemove(req.params.id, function deleteTutor(err) {
         if (err) {return next(err);}
-        res.status(200).json({'status': 'deleted successfully'});
+        res.status(200).json(success("", "Delete successful"));
     });
 };
 
@@ -73,7 +71,7 @@ exports.tutor_update_get = function(req, res, next) {
                 err.status = 404;
                 return next(err);
             } 
-            res.json(tutor);
+            res.json(success(tutor));
         });
 };
 
@@ -97,7 +95,7 @@ exports.tutor_update_post = function(req, res, next) {
 
             tutor.save()
                 .then(tutor => {
-                    res.status(200).json({'status': 'updated successfully', 'tutor': tutor});
+                    res.status(200).json(success(tutor, "Update successful"));
                 })
                 .catch(err => {
                     res.status(400).send('Updating failed');
