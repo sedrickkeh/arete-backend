@@ -1,5 +1,6 @@
 var Student = require('../models/student');
 var {success} = require('../tools/responseSender')
+var {page} = require('../tools/pageInfo')
 
 exports.student_list = function(req, res, next) {
     Student.find()

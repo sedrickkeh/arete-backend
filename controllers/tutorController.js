@@ -1,6 +1,7 @@
 var Tutor = require('../models/tutor');
 var multer = require('multer');
 var {success} = require('../tools/responseSender')
+var {page} = require('../tools/pageInfo')
 
 var storage = multer.diskStorage({
     destination: (req, file, cb) => {
