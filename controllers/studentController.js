@@ -104,15 +104,14 @@ exports.student_update_post = function(req, res, next) {
             student.name = req.body.name;
             student.gender = req.body.gender;
             student.email = req.body.email;
-            student.secondary.school = req.body.secondary.school;
-            student.secondary.curriculum = req.body.secondary.curriculum;
-            student.secondary.year = req.body.secondary.year;
+            student.school = req.body.school;
+            student.year = req.body.year;
             student.contact_number = req.body.contact_number;
             student.subjects = req.body.subjects;
-            student.i_prefer = req.body.i_prefer;
+            student.preference = req.body.preference;
             student.location = req.body.location;
             student.hourly_rate =req.body.hourly_rate;
-            student.description_of_needs = req.body.description_of_needs;
+            student.description = req.body.description;
 
             student.save()
                 .then(student => {
