@@ -15,10 +15,10 @@ var TutorSchema = new Schema(
         phone_number: {type:String, required:true},
         lessons: {
             subjects: [],
-            location: {type:String, required:true},
             time: [],
             min_wage: {type:Number, required:true}
         },
+        location: {type: Schema.Types.ObjectId, ref:'Location', required:true},
         self_introduction: {type:String, required:true}
     }
 );

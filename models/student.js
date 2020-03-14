@@ -14,7 +14,7 @@ var StudentSchema = new Schema(
         contact_number: {type:String, required:true},
         subjects: [String],
         i_prefer: {type:String, required:true},
-        location: {type:String, required:true},
+        location: {type: Schema.Types.ObjectId, ref:'Location', required:true},
         hourly_rate: {type:Number},
         description_of_needs: {type:String}
     }

@@ -1,6 +1,8 @@
 var Student = require('../models/student');
+var Location = require('../models/location');
 var {success} = require('../tools/responseSender')
 var {page} = require('../tools/pageInfo')
+var async = require('async');
 
 exports.student_list = function(req, res, next) {
     Student.find()
@@ -49,7 +51,14 @@ exports.student_find_one = ((req, res, next) => {
 });
 
 exports.student_create_get = function(req, res, next) {
-    res.send('Create GET not needed at this point');
+    async.parallel({
+        locations: function(callback) {
+            Location.find(callback);
+        }
+    }, function(err, results) {
+        if (err) {return next(err);}
+        res.json(success(results.locations));
+    });
 };
 
 exports.student_create_post = function(req, res, next) {

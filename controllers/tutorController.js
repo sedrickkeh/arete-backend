@@ -1,7 +1,9 @@
 var Tutor = require('../models/tutor');
+var Location = require('../models/location');
 var multer = require('multer');
 var {success} = require('../tools/responseSender')
 var {page} = require('../tools/pageInfo')
+var async = require('async');
 
 var storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -82,9 +84,16 @@ exports.tutor_find_one = ((req, res, next) => {
         });
 });
 
-exports.tutor_create_get = ((req, res, next) => {
-    res.send('Create GET not needed at this point');
-});
+exports.tutor_create_get = (req, res, next) => {
+    async.parallel({
+        locations: function(callback) {
+            Location.find(callback);
+        }
+    }, function(err, results) {
+        if (err) {return next(err);}
+        res.json(success(results.locations));
+    });
+};
 
 exports.tutor_create_post = ((req, res, next) =>{
     var tutor = new Tutor(req.body);
@@ -135,9 +144,9 @@ exports.tutor_update_post = (upload.single('imageFile'), (req, res, next) => {
             tutor.secondary.score = req.body.secondary.score;
             tutor.phone_number = req.body.phone_number;
             tutor.lessons.subjects = req.body.lessons.subjects;
-            tutor.lessons.location = req.body.lessons.location;
             tutor.lessons.time = req.body.lessons.time;
             tutor.lessons.min_wage = req.body.lessons.min_wage;
+            tutor.location = req.body.location;
             tutor.self_introduction = req.body.self_introduction;
 
             tutor.save()
