@@ -63,6 +63,19 @@ exports.tutor_detail = ((req, res, next) => {
         });
 });
 
+exports.tutor_find_one = ((req, res, next) => {
+    Tutor.findOne()
+        .exec(function(err, tutor) {
+            if (err) { return next(err); }
+            if (tutor == null) {
+                var err = new Error('Tutor not found');
+                err.status = 404;
+                return next(err);
+            } 
+            res.json(success({data:tutor}));
+        });
+});
+
 exports.tutor_create_get = ((req, res, next) => {
     res.send('Create GET not needed at this point');
 });

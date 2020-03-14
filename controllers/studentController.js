@@ -35,6 +35,19 @@ exports.student_detail = function(req, res, next) {
         });
 };
 
+exports.student_find_one = ((req, res, next) => {
+    Student.findOne()
+        .exec(function(err, student) {
+            if (err) { return next(err); }
+            if (student == null) {
+                var err = new Error('Tutor not found');
+                err.status = 404;
+                return next(err);
+            } 
+            res.json(success({data:student}));
+        });
+});
+
 exports.student_create_get = function(req, res, next) {
     res.send('Create GET not needed at this point');
 };

@@ -12,6 +12,7 @@ router.get('/active/', job_controller.get_active_page);
 
 router.get('/create', job_controller.job_create_get);
 router.post('/create', job_controller.job_create_post);
+router.get('/find_one', job_controller.job_find_one);
 router.get('/:id/delete', job_controller.job_delete_get);
 router.post('/:id/delete', job_controller.job_delete_post);
 router.get('/:id/update', job_controller.job_update_get);

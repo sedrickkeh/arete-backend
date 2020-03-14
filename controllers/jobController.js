@@ -55,6 +55,19 @@ exports.job_detail = function(req, res, next) {
         });
 };
 
+exports.job_find_one = function(req, res, next) {
+    Job.findOne()
+        .exec(function(err, job) {
+            if (err) { return next(err); }
+            if (job == null) {
+                var err = new Error('Job not found');
+                err.status = 404;
+                return next(err);
+            } 
+            res.json(success({data:job}));
+        });
+};
+
 exports.job_create_get = function(req, res, next) {
     res.send('Create GET not needed at this point');
 };
