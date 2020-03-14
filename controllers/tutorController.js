@@ -42,7 +42,13 @@ exports.tutor_list_page = ((req, res, next) => {
     var per_page = parseInt(req.query.limit) || 10;
     var page_num = parseInt(req.query.page) || 1;
     var to_skip = (page_num-1) * per_page;
-    Tutor.find().skip(to_skip).limit(per_page)
+
+    var filter = {}
+    if (req.query.subject) filter["lessons.subjects"] = { "$regex": req.query.subject, "$options": "i" };
+    if (req.query.name) filter["name"] = { "$regex": req.query.name, "$options": "i" };
+
+    Tutor.find(filter)
+        .skip(to_skip).limit(per_page)
         .exec(function(err, list_tutors) {
             if (err) {return next(err);}
             list_tutors_page = page(list_tutors, page_num, per_page);
