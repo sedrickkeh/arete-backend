@@ -22,6 +22,19 @@ exports.location_list_page = function(req, res, next) {
         });
 };
 
+exports.location_detail = function(req, res, next) {
+    Location.findById(req.params.id)
+        .exec(function(err, location) {
+            if (err) { return next(err); }
+            if (location == null) {
+                var err = new Error('Location not found');
+                err.status = 404;
+                return next(err);
+            } 
+            res.json(success({data:location}));
+        });
+};
+
 exports.location_create_get = function(req, res, next) {
     res.send('Create GET not needed at this point');
 };
