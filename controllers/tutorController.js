@@ -59,7 +59,7 @@ exports.tutor_detail = ((req, res, next) => {
                 err.status = 404;
                 return next(err);
             } 
-            res.json(success({data:list_tutors}));
+            res.json(success({data:tutor}));
         });
 });
 
