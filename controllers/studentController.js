@@ -5,7 +5,7 @@ var {page} = require('../tools/pageInfo')
 var async = require('async');
 
 exports.student_list = function(req, res, next) {
-    Student.find()
+    Student.find().populate('location')
         .exec(function(err, list_students) {
             if (err) {return next(err);}
             res.json(success({data:list_students}));
@@ -16,7 +16,8 @@ exports.student_list_page = function(req, res, next) {
     var per_page = parseInt(req.query.limit) || 10;
     var page_num = parseInt(req.query.page) || 1;
     var to_skip = (page_num-1) * per_page;
-    Student.find().skip(to_skip).limit(per_page)
+    Student.find().populate('location')
+        .skip(to_skip).limit(per_page)
         .exec(function(err, list_students) {
             if (err) {return next(err);}
             list_students_page = page(list_students, page_num, per_page);
@@ -25,7 +26,7 @@ exports.student_list_page = function(req, res, next) {
 };
 
 exports.student_detail = function(req, res, next) {
-    Student.findById(req.params.id)
+    Student.findById(req.params.id).populate('location')
         .exec(function(err, student) {
             if (err) { return next(err); }
             if (student == null) {
@@ -38,11 +39,11 @@ exports.student_detail = function(req, res, next) {
 };
 
 exports.student_find_one = ((req, res, next) => {
-    Student.findOne()
+    Student.findOne().populate('location')
         .exec(function(err, student) {
             if (err) { return next(err); }
             if (student == null) {
-                var err = new Error('Tutor not found');
+                var err = new Error('Student not found');
                 err.status = 404;
                 return next(err);
             } 

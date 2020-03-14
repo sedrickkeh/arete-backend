@@ -33,7 +33,7 @@ exports.index = ((req, res, next) => {
 });
 
 exports.tutor_list = ((req, res, next) => {
-    Tutor.find()
+    Tutor.find().populate('location')
         .exec(function(err, list_tutors) {
             if (err) {return next(err);}
             res.json(success({data:list_tutors}));
@@ -49,7 +49,7 @@ exports.tutor_list_page = ((req, res, next) => {
     if (req.query.subject) filter["subjects"] = { "$regex": req.query.subject, "$options": "i" };
     if (req.query.name) filter["name"] = { "$regex": req.query.name, "$options": "i" };
 
-    Tutor.find(filter)
+    Tutor.find(filter).populate('location')
         .skip(to_skip).limit(per_page)
         .exec(function(err, list_tutors) {
             if (err) {return next(err);}
@@ -59,7 +59,7 @@ exports.tutor_list_page = ((req, res, next) => {
 });
 
 exports.tutor_detail = ((req, res, next) => {
-    Tutor.findById(req.params.id)
+    Tutor.findById(req.params.id).populate('location')
         .exec(function(err, tutor) {
             if (err) { return next(err); }
             if (tutor == null) {
@@ -72,7 +72,7 @@ exports.tutor_detail = ((req, res, next) => {
 });
 
 exports.tutor_find_one = ((req, res, next) => {
-    Tutor.findOne()
+    Tutor.findOne().populate('location')
         .exec(function(err, tutor) {
             if (err) { return next(err); }
             if (tutor == null) {
