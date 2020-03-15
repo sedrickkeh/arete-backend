@@ -25,7 +25,7 @@ exports.student_list_page = function(req, res, next) {
         .populate('location')
         .skip(to_skip).limit(per_page)
         .exec(function(err, list_students) {
-            Student.count({}, function(err, doc_count) {
+            Student.count(filter, function(err, doc_count) {
                 if (err) {return next(err);}
                 list_students_page = page(list_students, page_num, per_page, doc_count);
                 res.json(success(list_students_page));
