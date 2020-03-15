@@ -16,7 +16,12 @@ exports.student_list_page = function(req, res, next) {
     var per_page = parseInt(req.query.limit) || 10;
     var page_num = parseInt(req.query.page) || 1;
     var to_skip = (page_num-1) * per_page;
-    Student.find().populate('location')
+
+    var filter = {}
+    if (req.query.subject) filter["subjects"] = { "$regex": req.query.subject, "$options": "i" };
+
+    Student.find(filter)
+        .populate('location')
         .skip(to_skip).limit(per_page)
         .exec(function(err, list_students) {
             if (err) {return next(err);}
