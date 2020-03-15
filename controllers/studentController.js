@@ -1,9 +1,11 @@
 var Student = require('../models/student');
+var Location = require('../models/location');
 var {success} = require('../tools/responseSender')
 var {page} = require('../tools/pageInfo')
+var async = require('async');
 
 exports.student_list = function(req, res, next) {
-    Student.find()
+    Student.find().populate('location')
         .exec(function(err, list_students) {
             if (err) {return next(err);}
             res.json(success({data:list_students}));
@@ -14,16 +16,25 @@ exports.student_list_page = function(req, res, next) {
     var per_page = parseInt(req.query.limit) || 10;
     var page_num = parseInt(req.query.page) || 1;
     var to_skip = (page_num-1) * per_page;
-    Student.find().skip(to_skip).limit(per_page)
+
+    var filter = {}
+    if (req.query.subject) filter["subjects"] = { "$regex": req.query.subject, "$options": "i" };
+    if (req.query.location) filter["location"] = req.query.location;
+
+    Student.find(filter)
+        .populate('location')
+        .skip(to_skip).limit(per_page)
         .exec(function(err, list_students) {
-            if (err) {return next(err);}
-            list_students_page = page(list_students, page_num, per_page);
-            res.json(success(list_students_page));
+            Student.count(filter, function(err, doc_count) {
+                if (err) {return next(err);}
+                list_students_page = page(list_students, page_num, per_page, doc_count);
+                res.json(success(list_students_page));
+            });
         });
 };
 
 exports.student_detail = function(req, res, next) {
-    Student.findById(req.params.id)
+    Student.findById(req.params.id).populate('location')
         .exec(function(err, student) {
             if (err) { return next(err); }
             if (student == null) {
@@ -35,8 +46,28 @@ exports.student_detail = function(req, res, next) {
         });
 };
 
+exports.student_find_one = ((req, res, next) => {
+    Student.findOne().populate('location')
+        .exec(function(err, student) {
+            if (err) { return next(err); }
+            if (student == null) {
+                var err = new Error('Student not found');
+                err.status = 404;
+                return next(err);
+            } 
+            res.json(success({data:student}));
+        });
+});
+
 exports.student_create_get = function(req, res, next) {
-    res.send('Create GET not needed at this point');
+    async.parallel({
+        locations: function(callback) {
+            Location.find(callback);
+        }
+    }, function(err, results) {
+        if (err) {return next(err);}
+        res.json(success(results.locations));
+    });
 };
 
 exports.student_create_post = function(req, res, next) {
@@ -81,14 +112,15 @@ exports.student_update_post = function(req, res, next) {
         } else {
             student.name = req.body.name;
             student.gender = req.body.gender;
-            student.secondary.school = req.body.secondary.school;
-            student.secondary.curriculum = req.body.secondary.curriculum;
-            student.secondary.year = req.body.secondary.year;
-            student.phone_number = req.body.phone_number;
-            student.lessons.subjects = req.body.lessons.subjects;
-            student.lessons.location = req.body.lessons.location;
-            student.lessons.max_wage = req.body.lessons.max_wage;
-            student.description_of_needs = req.body.description_of_needs;
+            student.email = req.body.email;
+            student.school = req.body.school;
+            student.year = req.body.year;
+            student.contact_number = req.body.contact_number;
+            student.subjects = req.body.subjects;
+            student.preference = req.body.preference;
+            student.location = req.body.location;
+            student.hourly_rate =req.body.hourly_rate;
+            student.description = req.body.description;
 
             student.save()
                 .then(student => {

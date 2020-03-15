@@ -16,9 +16,11 @@ exports.job_list_page = function(req, res, next) {
     var to_skip = (page_num-1) * per_page;
     Job.find().skip(to_skip).limit(per_page)
         .exec(function(err, list_jobs) {
-            if (err) {return next(err);}
-            list_jobs_page = page(list_jobs, page_num, per_page);
-            res.json(success(list_jobs_page));
+            Job.count(filter, function(err, doc_count) {
+                if (err) {return next(err);}
+                list_jobs_page = page(list_jobs, page_num, per_page, doc_count);
+                res.json(success(list_jobs_page));
+            });
         });
 };
 
@@ -36,14 +38,29 @@ exports.get_active_page = function(req, res, next) {
     var to_skip = (page_num-1) * per_page;
     Job.find({"is_active":true}).skip(to_skip).limit(per_page)
         .exec(function(err, list_jobs) {
-            if (err) {return next(err);}
-            list_jobs_page = page(list_jobs, page_num, per_page);
-            res.json(success(list_jobs_page));
+            Job.count(filter, function(err, doc_count) {
+                if (err) {return next(err);}
+                list_jobs_page = page(list_jobs, page_num, per_page, doc_count);
+                res.json(success(list_jobs_page));
+            });
         });
 };
 
 exports.job_detail = function(req, res, next) {
     Job.findById(req.params.id)
+        .exec(function(err, job) {
+            if (err) { return next(err); }
+            if (job == null) {
+                var err = new Error('Job not found');
+                err.status = 404;
+                return next(err);
+            } 
+            res.json(success({data:job}));
+        });
+};
+
+exports.job_find_one = function(req, res, next) {
+    Job.findOne()
         .exec(function(err, job) {
             if (err) { return next(err); }
             if (job == null) {

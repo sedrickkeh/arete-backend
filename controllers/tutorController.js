@@ -1,7 +1,9 @@
 var Tutor = require('../models/tutor');
+var Location = require('../models/location');
 var multer = require('multer');
 var {success} = require('../tools/responseSender')
 var {page} = require('../tools/pageInfo')
+var async = require('async');
 
 var storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -31,7 +33,7 @@ exports.index = ((req, res, next) => {
 });
 
 exports.tutor_list = ((req, res, next) => {
-    Tutor.find()
+    Tutor.find().populate('location')
         .exec(function(err, list_tutors) {
             if (err) {return next(err);}
             res.json(success({data:list_tutors}));
@@ -42,16 +44,24 @@ exports.tutor_list_page = ((req, res, next) => {
     var per_page = parseInt(req.query.limit) || 10;
     var page_num = parseInt(req.query.page) || 1;
     var to_skip = (page_num-1) * per_page;
-    Tutor.find().skip(to_skip).limit(per_page)
+
+    var filter = {}
+    if (req.query.subject) filter["subjects"] = { "$regex": req.query.subject, "$options": "i" };
+    if (req.query.name) filter["name"] = { "$regex": req.query.name, "$options": "i" };
+
+    Tutor.find(filter).populate('location')
+        .skip(to_skip).limit(per_page)
         .exec(function(err, list_tutors) {
-            if (err) {return next(err);}
-            list_tutors_page = page(list_tutors, page_num, per_page);
-            res.json(success(list_tutors_page));
+            Tutor.count(filter, function(err, doc_count) {
+                if (err) {return next(err);}
+                list_tutors_page = page(list_tutors, page_num, per_page, doc_count);
+                res.json(success(list_tutors_page));
+            });
         });
 });
 
 exports.tutor_detail = ((req, res, next) => {
-    Tutor.findById(req.params.id)
+    Tutor.findById(req.params.id).populate('location')
         .exec(function(err, tutor) {
             if (err) { return next(err); }
             if (tutor == null) {
@@ -59,13 +69,33 @@ exports.tutor_detail = ((req, res, next) => {
                 err.status = 404;
                 return next(err);
             } 
-            res.json(success({data:list_tutors}));
+            res.json(success({data:tutor}));
         });
 });
 
-exports.tutor_create_get = ((req, res, next) => {
-    res.send('Create GET not needed at this point');
+exports.tutor_find_one = ((req, res, next) => {
+    Tutor.findOne().populate('location')
+        .exec(function(err, tutor) {
+            if (err) { return next(err); }
+            if (tutor == null) {
+                var err = new Error('Tutor not found');
+                err.status = 404;
+                return next(err);
+            } 
+            res.json(success({data:tutor}));
+        });
 });
+
+exports.tutor_create_get = (req, res, next) => {
+    async.parallel({
+        locations: function(callback) {
+            Location.find(callback);
+        }
+    }, function(err, results) {
+        if (err) {return next(err);}
+        res.json(success(results.locations));
+    });
+};
 
 exports.tutor_create_post = ((req, res, next) =>{
     var tutor = new Tutor(req.body);
@@ -110,15 +140,12 @@ exports.tutor_update_post = (upload.single('tutorImage'), (req, res, next) => {
             // tutor.tutorImage = req.file.path
             tutor.name = req.body.name;
             tutor.gender = req.body.gender;
-            tutor.university = req.body.university;
-            tutor.secondary.school = req.body.secondary.school;
-            tutor.secondary.curriculum = req.body.secondary.curriculum;
-            tutor.secondary.score = req.body.secondary.score;
-            tutor.phone_number = req.body.phone_number;
-            tutor.lessons.subjects = req.body.lessons.subjects;
-            tutor.lessons.location = req.body.lessons.location;
-            tutor.lessons.time = req.body.lessons.time;
-            tutor.lessons.min_wage = req.body.lessons.min_wage;
+            tutor.contact_number = req.body.contact_number;
+            tutor.examination = req.body.examination;
+            tutor.subjects = req.body.subjects;
+            tutor.time = req.body.time;
+            tutor.hourly_rate = req.body.hourly_rate;
+            tutor.location = req.body.location;
             tutor.self_introduction = req.body.self_introduction;
 
             tutor.save()

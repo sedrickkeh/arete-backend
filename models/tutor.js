@@ -3,22 +3,15 @@ var Schema = mongoose.Schema;
 
 var TutorSchema = new Schema(
     {
-        tutorImage: {type:String, required:false},
+        // tutorImage: {type:String, required:false},
         name: {type:String, required:true},
         gender: {type:String, required:true},
-        university: {type:String, required:true},
-        secondary: {
-            school: {type:String, required:true},
-            curriculum: {type:String, required:true},
-            score: {type:Number, required:true}
-        },
-        phone_number: {type:String, required:true},
-        lessons: {
-            subjects: [],
-            location: {type:String, required:true},
-            time: [],
-            min_wage: {type:Number, required:true}
-        },
+        contact_number: {type:String, required:true},
+        examination: [String],
+        subjects: [String],
+        time: [String],
+        hourly_rate: {type:Number},
+        location: {type: Schema.Types.ObjectId, ref:'Location', required:true},
         self_introduction: {type:String, required:true}
     }
 );
