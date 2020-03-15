@@ -19,6 +19,7 @@ exports.student_list_page = function(req, res, next) {
 
     var filter = {}
     if (req.query.subject) filter["subjects"] = { "$regex": req.query.subject, "$options": "i" };
+    if (req.query.location) filter["location"] = req.query.location;
 
     Student.find(filter)
         .populate('location')
