@@ -7,7 +7,7 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var jobRouter = require('./routes/jobs');
-
+var { handleError, ErrorHandler } = require('./helpers/error')
 var app = express();
 
 // set up mongoose connection
@@ -48,7 +48,16 @@ app.use(function(req, res, next) {
   next(createError(404));
 });
 
-// error handler
+app.get('/error', (req, res) => {
+  throw new ErrorHandler(500, 'Internal server error');
+})
+
+//error handler
+app.use((err, req, res, next) => {
+  handleError(err, res);
+});
+
+/* // error handler
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
@@ -58,5 +67,5 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
-
+ */
 module.exports = app;

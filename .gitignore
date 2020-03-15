@@ -1,4 +1,5 @@
 /node_modules
+/images
 build
 npm-debug.log
 .env

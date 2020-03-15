@@ -102,7 +102,7 @@ exports.tutor_update_get = ((req, res, next) => {
         });
 });
 
-exports.tutor_update_post = (upload.single('imageFile'), (req, res, next) => {
+exports.tutor_update_post = (upload.single('tutorImage'), (req, res, next) => {
     Tutor.findById(req.params.id, function(err, tutor) {
         if (!tutor) {
             res.status(404).send("Tutor not found.");
