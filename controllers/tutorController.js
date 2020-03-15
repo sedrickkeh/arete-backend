@@ -140,7 +140,7 @@ exports.tutor_update_post = (upload.single('imageFile'), (req, res, next) => {
             // tutor.tutorImage = req.file.path
             tutor.name = req.body.name;
             tutor.gender = req.body.gender;
-            tutor.phone_number = req.body.phone_number;
+            tutor.contact_number = req.body.contact_number;
             tutor.examination = req.body.examination;
             tutor.subjects = req.body.subjects;
             tutor.time = req.body.time;
