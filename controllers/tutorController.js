@@ -52,9 +52,11 @@ exports.tutor_list_page = ((req, res, next) => {
     Tutor.find(filter).populate('location')
         .skip(to_skip).limit(per_page)
         .exec(function(err, list_tutors) {
-            if (err) {return next(err);}
-            list_tutors_page = page(list_tutors, page_num, per_page);
-            res.json(success(list_tutors_page));
+            Tutor.count({}, function(err, doc_count) {
+                if (err) {return next(err);}
+                list_tutors_page = page(list_tutors, page_num, per_page, doc_count);
+                res.json(success(list_tutors_page));
+            });
         });
 });
 
