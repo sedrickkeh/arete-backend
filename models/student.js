@@ -3,6 +3,13 @@ var Schema = mongoose.Schema;
 
 var StudentSchema = new Schema(
     {
+        contact: {
+            title: {type:String, required:true},
+            name: {type:String, required:true},
+            contact_number:{type:String, required:true},
+            email: {type:String, required:true},
+            relationship: {type:String, required:true}
+        },
         name: {type:String, required:true},
         gender: {type:String, required:true},
         email: {type:String, required:true},
