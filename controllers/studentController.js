@@ -72,11 +72,6 @@ exports.student_create_get = function(req, res, next) {
 
 exports.student_create_post = function(req, res, next) {
     var student = new Student(req.body);
-    student.contact.title = req.body.contact.title;
-    student.contact.name = req.body.contact.name;
-    student.contact.contact_number = req.body.contact.contact_number;
-    student.contact.email = req.body.contact.email;
-    student.contact.relationship = req.body.contact.relationship;
     
     student.save()
         .then(student => {
