@@ -115,6 +115,7 @@ exports.student_update_post = function(req, res, next) {
             student.email = req.body.email;
             student.school = req.body.school;
             student.year = req.body.year;
+            student.examination = req.body.examination;
             student.contact_number = req.body.contact_number;
             student.subjects = req.body.subjects;
             student.preference = req.body.preference;

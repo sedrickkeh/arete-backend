@@ -8,10 +8,11 @@ var StudentSchema = new Schema(
         email: {type:String, required:true},
         school: {type:String, required:true},
         year: {type:Number, required:true},
+        examination: [String],
         contact_number: {type:String, required:true},
         subjects: [String],
         preference: {type:String, required:true},
-        location: {type: Schema.Types.ObjectId, ref:'Location', required:true},
+        location: [{type: Schema.Types.ObjectId, ref:'Location'}],
         hourly_rate: {type:Number},
         description: {type:String}
     }
