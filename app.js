@@ -9,6 +9,7 @@ var usersRouter = require('./routes/users');
 var jobRouter = require('./routes/jobs');
 //var { handleError, ErrorHandler } = require('./helpers/error')
 var locationsRouter = require('./routes/locations');
+var contactRouter = require('./routes/contact');
 
 var app = express();
 
@@ -44,6 +45,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/jobs', jobRouter);
 app.use('/locations', locationsRouter);
+app.use('/contact', contactRouter);
 app.use('/images', express.static('images'));
 
 // catch 404 and forward to error handler

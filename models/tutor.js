@@ -11,7 +11,7 @@ var TutorSchema = new Schema(
         subjects: [String],
         time: [String],
         hourly_rate: {type:Number},
-        location: {type: Schema.Types.ObjectId, ref:'Location', required:true},
+        location: [{type: Schema.Types.ObjectId, ref:'Location'}],
         self_introduction: {type:String, required:true}
     }
 );

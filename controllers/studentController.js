@@ -72,6 +72,12 @@ exports.student_create_get = function(req, res, next) {
 
 exports.student_create_post = function(req, res, next) {
     var student = new Student(req.body);
+    student.contact.title = req.body.contact.title;
+    student.contact.name = req.body.contact.name;
+    student.contact.contact_number = req.body.contact.contact_number;
+    student.contact.email = req.body.contact.email;
+    student.contact.relationship = req.body.contact.relationship;
+    
     student.save()
         .then(student => {
             res.status(200).json(success({data:student}, "Create successful"));
@@ -110,11 +116,18 @@ exports.student_update_post = function(req, res, next) {
         if (!student) {
             res.status(404).send("Student not found.");
         } else {
+            student.contact.title = req.body.contact.title;
+            student.contact.name = req.body.contact.name;
+            student.contact.contact_number = req.body.contact.contact_number;
+            student.contact.email = req.body.contact.email;
+            student.contact.relationship = req.body.contact.relationship;
+
             student.name = req.body.name;
             student.gender = req.body.gender;
             student.email = req.body.email;
             student.school = req.body.school;
             student.year = req.body.year;
+            student.examination = req.body.examination;
             student.contact_number = req.body.contact_number;
             student.subjects = req.body.subjects;
             student.preference = req.body.preference;
