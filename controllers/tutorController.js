@@ -48,7 +48,8 @@ exports.tutor_list_page = ((req, res, next) => {
     var filter = {}
     if (req.query.subject) filter["subjects"] = { "$regex": req.query.subject, "$options": "i" };
     if (req.query.name) filter["name"] = { "$regex": req.query.name, "$options": "i" };
-
+    if (req.query.location) filter["location"] = req.query.location;
+    
     Tutor.find(filter).populate('location')
         .skip(to_skip).limit(per_page)
         .exec(function(err, list_tutors) {
