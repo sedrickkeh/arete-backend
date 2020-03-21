@@ -1,5 +1,6 @@
 var Tutor = require('../models/tutor');
 var Location = require('../models/location');
+var idschema = require('../tools/idSchema');
 var multer = require('multer');
 var {success} = require('../tools/responseSender')
 var {page} = require('../tools/pageInfo')
@@ -100,12 +101,18 @@ exports.tutor_create_get = (req, res, next) => {
 
 exports.tutor_create_post = ((req, res, next) =>{
     var tutor = new Tutor(req.body);
-    tutor.save()
-        .then(tutor => {
-            res.status(200).json(success({data:req.body}));
-        })
-        .catch(err => {
-            res.status(400).send('creating failed');
+    idschema.find({name:"Tutor"})
+        .exec(function(err, tutorcntr) {
+            tutorcntr[0].count += 1;
+            tutorcntr[0].save()
+            tutor.tutor_id = tutorcntr[0].count;
+            tutor.save()
+            .then(tutor => {
+                res.status(200).json(success({data:tutor}));
+            })
+            .catch(err => {
+                res.status(400).send('creating failed');
+            });
         });
 });
 

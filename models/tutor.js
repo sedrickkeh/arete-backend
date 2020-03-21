@@ -5,6 +5,7 @@ var TutorSchema = new Schema(
     {
         // tutorImage: {type:String, required:false},
         name: {type:String, required:true},
+        tutor_id: {type:Number, default:-1},
         pref_name: {type:String},
         gender: {type:String, required:true},
         age: {type: Number, required: true},
