@@ -49,7 +49,7 @@ exports.tutor_list_page = ((req, res, next) => {
     if (req.query.subject) filter["subjects"] = { "$regex": req.query.subject, "$options": "i" };
     if (req.query.name) filter["name"] = { "$regex": req.query.name, "$options": "i" };
     if (req.query.location) filter["location"] = req.query.location;
-    
+
     Tutor.find(filter).populate('location')
         .skip(to_skip).limit(per_page)
         .exec(function(err, list_tutors) {
@@ -140,12 +140,21 @@ exports.tutor_update_post = (upload.single('imageFile'), (req, res, next) => {
         } else {
             // tutor.tutorImage = req.file.path
             tutor.name = req.body.name;
+            tutor.pref_name = req.body.pred_name;
             tutor.gender = req.body.gender;
+            tutor.age = req.body.age;
             tutor.contact_number = req.body.contact_number;
             tutor.examination = req.body.examination;
+            tutor.score = req.body.score;
+            tutor.subject_scores = req.body.subject_scores;
             tutor.subjects = req.body.subjects;
+            tutor.experience = req.body.experience;
+            tutor.licensed = req.body.licensed;
+            tutor.university_name = req.body.university_name;
+            tutor.university_program = req.body.university_program;
             tutor.time = req.body.time;
             tutor.hourly_rate = req.body.hourly_rate;
+            tutor.preference = req.body.preference;
             tutor.location = req.body.location;
             tutor.self_introduction = req.body.self_introduction;
 
