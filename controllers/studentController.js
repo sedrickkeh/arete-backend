@@ -1,5 +1,6 @@
 var Student = require('../models/student');
 var Location = require('../models/location');
+var idschema = require('../tools/idSchema');
 var {success} = require('../tools/responseSender')
 var {page} = require('../tools/pageInfo')
 var async = require('async');
@@ -78,12 +79,18 @@ exports.student_create_post = function(req, res, next) {
     student.contact.email = req.body.contact.email;
     student.contact.relationship = req.body.contact.relationship;
     
-    student.save()
-        .then(student => {
-            res.status(200).json(success({data:student}, "Create successful"));
-        })
-        .catch(err => {
-            res.status(400).send('creating failed');
+    idschema.find({name:"Student"})
+        .exec(function(err, studentcntr) {
+            studentcntr[0].count += 1;
+            studentcntr[0].save()
+            student.student_id = studentcntr[0].count;
+            student.save()
+            .then(student => {
+                res.status(200).json(success({data:student}));
+            })
+            .catch(err => {
+                res.status(400).send('creating failed');
+            });
         });
 };
 
