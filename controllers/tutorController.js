@@ -152,8 +152,8 @@ exports.tutor_update_post = (upload.single('tutorImage'), (req, res, next) => {
             tutor.age = req.body.age;
             tutor.contact_number = req.body.contact_number;
             tutor.examination = req.body.examination;
-            tutor.score = req.body.score;
-            tutor.subject_scores = req.body.subject_scores;
+            tutor.overall_score = req.body.overall_score;
+            tutor.detailed_scores = req.body.detailed_scores;
             tutor.subjects = req.body.subjects;
             tutor.experience = req.body.experience;
             tutor.licensed = req.body.licensed;

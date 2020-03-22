@@ -11,11 +11,8 @@ var TutorSchema = new Schema(
         age: {type: Number, required: true},
         contact_number: {type:String, required:true},
         examination: [String],
-        score: {type: String},
-        subject_scores: [{
-            subject_taken: {type:String},
-            subject_score: {type: String}
-        }],
+        overall_score: {type: String},
+        detailed_scores: {type: String},
         subjects: [String],
         experience: {type:Number, required:true},
         licensed: {type:Boolean, required:true},
