@@ -13,8 +13,8 @@ var TutorSchema = new Schema(
         examination: [String],
         score: {type: String},
         subject_scores: [{
-            name: {type:String},
-            score: {type: String}
+            subject_taken: {type:String},
+            subject_score: {type: String}
         }],
         subjects: [String],
         experience: {type:Number, required:true},
