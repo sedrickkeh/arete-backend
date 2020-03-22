@@ -146,6 +146,7 @@ exports.tutor_update_post = (upload.single('tutorImage'), (req, res, next) => {
             res.status(404).send("Tutor not found.");
         } else {
             // tutor.tutorImage = req.file.path
+            tutor.title = req.body.title;
             tutor.name = req.body.name;
             tutor.pref_name = req.body.pred_name;
             tutor.gender = req.body.gender;
