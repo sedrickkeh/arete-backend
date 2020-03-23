@@ -4,6 +4,7 @@ var Schema = mongoose.Schema;
 var TutorSchema = new Schema(
     {
         // tutorImage: {type:String, required:false},
+        title: {type:String, required:true},
         name: {type:String, required:true},
         tutor_id: {type:Number, default:-1},
         pref_name: {type:String},
