@@ -15,7 +15,7 @@ var TutorSchema = new Schema(
         overall_score: {type: String},
         detailed_scores: {type: String},
         subjects: [String],
-        experience: {type:Number, required:true},
+        experience: {type:String, required:true},
         licensed: {type:Boolean, required:true},
         university_name: {type:String},
         university_program: {type:String},
