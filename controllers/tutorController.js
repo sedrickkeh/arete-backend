@@ -148,6 +148,7 @@ exports.tutor_update_post = (upload.single('tutorImage'), (req, res, next) => {
             // tutor.tutorImage = req.file.path
             tutor.title = req.body.title;
             tutor.name = req.body.name;
+            tutor.email = req.body.email;
             tutor.pref_name = req.body.pred_name;
             tutor.gender = req.body.gender;
             tutor.age = req.body.age;
