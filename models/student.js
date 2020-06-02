@@ -11,10 +11,11 @@ var StudentSchema = new Schema(
             relationship: {type:String, required:true}
         },
         name: {type:String, required:true},
+        student_id: {type:Number, default:-1},
         gender: {type:String, required:true},
         email: {type:String, required:true},
         school: {type:String, required:true},
-        year: {type:Number, required:true},
+        year: {type:String, required:true},
         examination: [String],
         contact_number: {type:String, required:true},
         subjects: [String],
