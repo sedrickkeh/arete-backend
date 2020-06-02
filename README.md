@@ -23,9 +23,13 @@ This runs the files with nodemon so live changes are reflected.
 - [x] Response Sender function
 - [x] Pagination Response function
 - [ ] Use PUT / DELETE API calls properly
-- [ ] Clean up the unnecessarily files that were created by default
+- [x] Clean up the unnecessarily files that were created by default
 - [ ] Centralized Error Handling
-- [ ] User Authentication
+- [ ] **User Authentication**
 - [ ] Sanitize Fields
 - [ ] Logs, compression, other deployment things
-- [ ] **Add last_page in pagination**
+- [ ] **Optimize last_page in pagination**
+- [ ] Consistent syntax (use a linter)
+- [ ] Change age to DOB(?)
+- [ ] .env for confidential information
+- [ ] **Test Updates**
