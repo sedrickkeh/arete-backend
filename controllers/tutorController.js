@@ -1,4 +1,4 @@
-var Tutor = require('../models/tutor');
+var Tutor = require('../models/users');
 var Location = require('../models/location');
 var idschema = require('../tools/idSchema');
 var multer = require('multer');
@@ -34,7 +34,7 @@ exports.index = ((req, res, next) => {
 });
 
 exports.tutor_list = ((req, res, next) => {
-    Tutor.find().populate('location')
+    Tutor.find({role:"tutor"}).populate('location')
         .exec(function(err, list_tutors) {
             if (err) {return next(err);}
             res.json(success({data:list_tutors}));
@@ -47,6 +47,7 @@ exports.tutor_list_page = ((req, res, next) => {
     var to_skip = (page_num-1) * per_page;
 
     var filter = {}
+    filter["role"] = "tutor";
     if (req.query.subject) filter["subjects"] = { "$regex": req.query.subject, "$options": "i" };
     if (req.query.name) filter["name"] = { "$regex": req.query.name, "$options": "i" };
     if (req.query.location) filter["location"] = req.query.location;
@@ -76,7 +77,7 @@ exports.tutor_detail = ((req, res, next) => {
 });
 
 exports.tutor_find_one = ((req, res, next) => {
-    Tutor.findOne().populate('location')
+    Tutor.findOne({role:"tutor"}).populate('location')
         .exec(function(err, tutor) {
             if (err) { return next(err); }
             if (tutor == null) {
@@ -100,12 +101,44 @@ exports.tutor_create_get = (req, res, next) => {
 };
 
 exports.tutor_create_post = ((req, res, next) =>{
-    var tutor = new Tutor(req.body);
+    var tutor = new Tutor();
+
+    // Login Info
+    tutor.email = req.body.email;
+    tutor.password = req.body.password;
+    tutor.role = "tutor"
+
+    // General Info
+    tutor.title = req.body.title;
+    tutor.name = req.body.name;
+    tutor.pref_name = req.body.pref_name;
+    tutor.gender = req.body.gender;
+    tutor.age = req.body.age;
+    tutor.contact_number = req.body.contact_number;
+
+    // Learning-related Info
+    tutor.location = req.body.location;
+    tutor.hourly_rate = req.body.hourly_rate;
+    tutor.preference = req.body.preference;
+    tutor.subjects = req.body.subjects;
+    tutor.time = req.body.time;
+
+    // Tutor-specific Info
+    tutor.examination_tutor = req.body.examination_tutor;
+    tutor.overall_score = req.body.overall_score;
+    tutor.detailed_scores = req.body.detailed_scores;
+    tutor.experience = req.body.experience;
+    tutor.licensed = req.body.licensed;
+    tutor.university_name = req.body.university_name;
+    tutor.university_program = req.body.university_program;
+    tutor.self_introduction = req.body.self_introduction;
+
+
     idschema.find({name:"Tutor"})
         .exec(function(err, tutorcntr) {
             tutorcntr[0].count += 1;
             tutorcntr[0].save()
-            tutor.tutor_id = tutorcntr[0].count;
+            tutor.user_id = tutorcntr[0].count;
             tutor.save()
             .then(tutor => {
                 res.status(200).json(success({data:tutor}));
@@ -145,28 +178,36 @@ exports.tutor_update_post = (upload.single('tutorImage'), (req, res, next) => {
         if (!tutor) {
             res.status(404).send("Tutor not found.");
         } else {
-            // tutor.tutorImage = req.file.path
+            // Login Info
+            tutor.email = req.body.email;
+            tutor.password = req.body.password;
+            tutor.role = "tutor"
+
+            // General Info
             tutor.title = req.body.title;
             tutor.name = req.body.name;
-            tutor.email = req.body.email;
-            tutor.pref_name = req.body.pred_name;
+            tutor.pref_name = req.body.pref_name;
             tutor.gender = req.body.gender;
             tutor.age = req.body.age;
             tutor.contact_number = req.body.contact_number;
-            tutor.examination = req.body.examination;
+
+            // Learning-related Info
+            tutor.location = req.body.location;
+            tutor.hourly_rate = req.body.hourly_rate;
+            tutor.preference = req.body.preference;
+            tutor.subjects = req.body.subjects;
+            tutor.time = req.body.time;
+
+            // Tutor-specific Info
+            tutor.examination_tutor = req.body.examination_tutor;
             tutor.overall_score = req.body.overall_score;
             tutor.detailed_scores = req.body.detailed_scores;
-            tutor.subjects = req.body.subjects;
             tutor.experience = req.body.experience;
             tutor.licensed = req.body.licensed;
             tutor.university_name = req.body.university_name;
             tutor.university_program = req.body.university_program;
-            tutor.time = req.body.time;
-            tutor.hourly_rate = req.body.hourly_rate;
-            tutor.preference = req.body.preference;
-            tutor.location = req.body.location;
             tutor.self_introduction = req.body.self_introduction;
-
+    
             tutor.save()
                 .then(tutor => {
                     res.status(200).json(success({data:tutor}, "Update successful"));
