@@ -6,26 +6,33 @@ var student_controller = require('../controllers/studentController');
 
 router.get('/', tutor_controller.index);
 
-router.get('/tutor/list/all', tutor_controller.tutor_list);
-router.get('/tutor/list/', tutor_controller.tutor_list_page);
-router.get('/tutor/create', tutor_controller.tutor_create_get);
-router.post('/tutor/create', tutor_controller.tutor_create_post);
-router.get('/tutor/find_one', tutor_controller.tutor_find_one);
-router.get('/tutor/:id/delete', tutor_controller.tutor_delete_get);
-router.post('/tutor/:id/delete', tutor_controller.tutor_delete_post);
-router.get('/tutor/:id/update', tutor_controller.tutor_update_get);
-router.post('/tutor/:id/update', tutor_controller.tutor_update_post);
-router.get('/tutor/:id', tutor_controller.tutor_detail);
+// Tutor Routes
+var tutorRoutes = express.Router()
+router.use('/tutor', tutorRoutes);
+tutorRoutes.get('/list/all', requireAuth, tutor_controller.tutor_list);
+tutorRoutes.get('/list/', tutor_controller.tutor_list_page);
+tutorRoutes.get('/create', tutor_controller.tutor_create_get);
+tutorRoutes.post('/create', tutor_controller.tutor_create_post);
+tutorRoutes.get('/find_one', tutor_controller.tutor_find_one);
+tutorRoutes.get('/:id/delete', tutor_controller.tutor_delete_get);
+tutorRoutes.post('/:id/delete', tutor_controller.tutor_delete_post);
+tutorRoutes.get('/:id/update', tutor_controller.tutor_update_get);
+tutorRoutes.post('/:id/update', tutor_controller.tutor_update_post);
+tutorRoutes.get('/:id', tutor_controller.tutor_detail);
 
-router.get('/student/list/all', student_controller.student_list);
-router.get('/student/list/', student_controller.student_list_page);
-router.get('/student/create', student_controller.student_create_get);
-router.post('/student/create', student_controller.student_create_post);
-router.get('/student/find_one', student_controller.student_find_one);
-router.get('/student/:id/delete', student_controller.student_delete_get);
-router.post('/student/:id/delete', student_controller.student_delete_post);
-router.get('/student/:id/update', student_controller.student_update_get);
-router.post('/student/:id/update', student_controller.student_update_post);
-router.get('/student/:id', student_controller.student_detail);
+
+// Student Routes
+var studentRoutes = express.Router()
+router.use('/student', studentRoutes);
+studentRoutes.get('/list/all', student_controller.student_list);
+studentRoutes.get('/list/', student_controller.student_list_page);
+studentRoutes.get('/create', student_controller.student_create_get);
+studentRoutes.post('/create', student_controller.student_create_post);
+studentRoutes.get('/find_one', student_controller.student_find_one);
+studentRoutes.get('/:id/delete', student_controller.student_delete_get);
+studentRoutes.post('/:id/delete', student_controller.student_delete_post);
+studentRoutes.get('/:id/update', student_controller.student_update_get);
+studentRoutes.post('/:id/update', student_controller.student_update_post);
+studentRoutes.get('/:id', student_controller.student_detail);
 
 module.exports = router;
