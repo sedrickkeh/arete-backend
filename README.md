@@ -33,3 +33,4 @@ This runs the files with nodemon so live changes are reflected.
 - [ ] Change age to DOB(?)
 - [ ] .env for confidential information
 - [ ] **Test Updates**
+- [ ] **Rating update ave scores**

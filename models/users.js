@@ -38,6 +38,8 @@ var UserSchema = new Schema(
         university_name: {type:String},
         university_program: {type:String},
         self_introduction: {type:String},
+        num_ratings: {type:Number},
+        ave_rating: {type:Number},
 
         // Student Only
         contact: {
