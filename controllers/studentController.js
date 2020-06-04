@@ -3,6 +3,7 @@ var Location = require('../models/location');
 var idschema = require('../tools/idSchema');
 var {success} = require('../tools/responseSender')
 var {page} = require('../tools/pageInfo')
+var {setUserInfo, generateToken} = require('./authController')
 var async = require('async');
 
 exports.student_list = function(req, res, next) {
@@ -106,20 +107,29 @@ exports.student_create_post = function(req, res, next) {
     student.examination_student = req.body.examination_student
     student.description = req.body.description
 
+    // Check missing fields
+    if(!student.email) {return res.status(422).send({error: 'You must enter an email address'});}
+    if(!student.password) {return res.status(422).send({error: 'You must enter a password'});}
 
-    idschema.find({name:"Student"})
+    Student.findOne({email: student.email}, function(err, existingUser){
+        if(err) {return next(err);}
+        if(existingUser) {return res.status(422).send({error: 'That email address is already in use'});}
+
+        idschema.find({name:"Student"})
         .exec(function(err, studentcntr) {
             studentcntr[0].count += 1;
             studentcntr[0].save()
             student.user_id = studentcntr[0].count;
-            student.save()
-            .then(student => {
-                res.status(200).json(success({data:student}));
+            student.save(function(err, user) {
+                if (err) {return next(err);}
+                var userInfo = setUserInfo(user);
+                res.status(201).json({
+                    token: 'JWT ' + generateToken(userInfo),
+                    user: userInfo
+                })
             })
-            .catch(err => {
-                res.status(400).send('creating failed');
-            });
         });
+    });
 };
 
 exports.student_delete_get = function(req, res, next) {

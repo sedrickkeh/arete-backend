@@ -4,6 +4,7 @@ var idschema = require('../tools/idSchema');
 var multer = require('multer');
 var {success} = require('../tools/responseSender')
 var {page} = require('../tools/pageInfo')
+var {setUserInfo, generateToken} = require('./authController')
 var async = require('async');
 
 var storage = multer.diskStorage({
@@ -133,20 +134,29 @@ exports.tutor_create_post = ((req, res, next) =>{
     tutor.university_program = req.body.university_program;
     tutor.self_introduction = req.body.self_introduction;
 
+    // Check missing fields
+    if(!tutor.email) {return res.status(422).send({error: 'You must enter an email address'});}
+    if(!tutor.password) {return res.status(422).send({error: 'You must enter a password'});}
 
-    idschema.find({name:"Tutor"})
+    Tutor.findOne({email: tutor.email}, function(err, existingUser){
+        if(err) {return next(err);}
+        if(existingUser) {return res.status(422).send({error: 'That email address is already in use'});}
+
+        idschema.find({name:"Tutor"})
         .exec(function(err, tutorcntr) {
             tutorcntr[0].count += 1;
             tutorcntr[0].save()
             tutor.user_id = tutorcntr[0].count;
-            tutor.save()
-            .then(tutor => {
-                res.status(200).json(success({data:tutor}));
+            tutor.save(function(err, user) {
+                if (err) {return next(err);}
+                var userInfo = setUserInfo(user);
+                res.status(201).json({
+                    token: 'JWT ' + generateToken(userInfo),
+                    user: userInfo
+                })
             })
-            .catch(err => {
-                res.status(400).send('creating failed');
-            });
         });
+    });
 });
 
 exports.tutor_delete_get = ((req, res, next) => {
