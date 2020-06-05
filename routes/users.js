@@ -13,7 +13,7 @@ router.get('/', tutor_controller.index);
 // Tutor Routes
 var tutorRoutes = express.Router()
 router.use('/tutor', tutorRoutes);
-tutorRoutes.get('/list/all', requireAuth, tutor_controller.tutor_list);
+tutorRoutes.get('/list/all', tutor_controller.tutor_list);
 tutorRoutes.get('/list/', tutor_controller.tutor_list_page);
 tutorRoutes.get('/create', tutor_controller.tutor_create_get);
 tutorRoutes.post('/create', tutor_controller.tutor_create_post);
