@@ -42,22 +42,28 @@ exports.my_requests = function(req, res, next) {
 };
 
 exports.create_request = function(req, res, next) {
-    var request = new Request();
-    request.title = req.body.title;
-    request.student = req.user._id;
-    request.location = req.body.location;
-    request.subject = req.body.subject;
-    request.description = req.body.description;
-
-    // Ensure user role is student
-
-    request.save()
-        .then(request => {
-            request.status(200).json(success({data:job}, "Create successful"));
-        })
-        .catch(err => {
-            res.status(400).send('creating failed');
-        });
+    my_role = req.user.role;
+    if (my_role != "student") {
+        res.status(400).send("Only students can post requests!");
+    } else {
+        var request = new Request();
+        request.title = req.body.title;
+        request.student = req.user._id;
+        request.location = req.body.location;
+        request.subject = req.body.subject;
+        request.description = req.body.description;
+        request.is_active = true;
+    
+        // Ensure user role is student
+    
+        request.save()
+            .then(request => {
+                request.status(200).json(success({data:job}, "Create successful"));
+            })
+            .catch(err => {
+                res.status(400).send('creating failed');
+            });
+    }
 };
 
 exports.delete_request = function(req, res, next) {
