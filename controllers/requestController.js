@@ -79,7 +79,7 @@ exports.update_request = function(req, res, next) {
             request.title = req.body.title;
             request.location = req.body.location;
             request.subject = req.body.subject;
-            request.description = req.body.is_active;
+            request.description = req.body.description;
 
             request.save()
                 .then(request => {
