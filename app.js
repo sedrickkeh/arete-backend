@@ -11,7 +11,8 @@ var locationsRouter = require('./routes/locations');
 var contactRouter = require('./routes/contact');
 var idRouter = require('./tools/idCounter');
 var authRouter = require('./routes/auth');
-var ratingRouter = require('./routes/ratings')
+var ratingRouter = require('./routes/ratings');
+var requestRouter = require('./routes/requests');
 
 var app = express();
 
@@ -42,6 +43,7 @@ app.use((req, res, next)=>{
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/ratings', ratingRouter);
+app.use('/requests', requestRouter);
 app.use('/locations', locationsRouter);
 app.use('/contact', contactRouter);
 app.use('/auth', authRouter);

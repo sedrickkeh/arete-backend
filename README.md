@@ -25,7 +25,7 @@ This runs the files with nodemon so live changes are reflected.
 - [ ] Use PUT / DELETE API calls properly
 - [x] Clean up the unnecessarily files that were created by default
 - [ ] Centralized Error Handling
-- [ ] **User Authentication**
+- [x] **User Authentication**
 - [ ] Sanitize Fields
 - [ ] Logs, compression, other deployment things
 - [ ] **Optimize last_page in pagination**
@@ -34,3 +34,4 @@ This runs the files with nodemon so live changes are reflected.
 - [ ] .env for confidential information
 - [ ] **Test Updates**
 - [ ] **Rating update ave scores**
+- [ ] Return format
