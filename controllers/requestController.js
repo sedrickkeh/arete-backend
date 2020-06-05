@@ -58,7 +58,7 @@ exports.create_request = function(req, res, next) {
     
         request.save()
             .then(request => {
-                request.status(200).json(success({data:job}, "Create successful"));
+                request.status(200).json(success({data:request}, "Create successful"));
             })
             .catch(err => {
                 res.status(400).send('creating failed');
