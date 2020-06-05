@@ -102,10 +102,10 @@ exports.deactivate = function(req, res, next) {
             request.is_active = false;
             request.save()
                 .then(request => {
-                    request.status(200).json(success({data:request}, "Deactivate successful"));
+                    res.status(200).json(success({data:request}, "Deactivate successful"));
                 })
                 .catch(err => {
-                    request.status(400).send('Deactivation failed');
+                    res.status(400).send('Deactivation failed');
                 });
         }
     });
@@ -121,10 +121,10 @@ exports.activate = function(req, res, next) {
             request.is_active = true;
             request.save()
                 .then(request => {
-                    request.status(200).json(success({data:request}, "Activate successful"));
+                    res.status(200).json(success({data:request}, "Activate successful"));
                 })
                 .catch(err => {
-                    request.status(400).send('Activation failed');
+                    res.status(400).send('Activation failed');
                 });
         }
     });
@@ -157,10 +157,10 @@ exports.apply_for_request = function(req, res, next) {
                 request.tutors_applied.push(req.user._id)
                 request.save()
                     .then(request => {
-                        request.status(200).json(success({data:request}, "Application successful"));
+                        res.status(200).json(success({data:request}, "Application successful"));
                     })
                     .catch(err => {
-                        request.status(400).send('Application failed');
+                        res.status(400).send('Application failed');
                     });
             }
         });
