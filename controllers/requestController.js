@@ -53,12 +53,10 @@ exports.create_request = function(req, res, next) {
         request.subject = req.body.subject;
         request.description = req.body.description;
         request.is_active = true;
-    
-        // Ensure user role is student
-    
+        
         request.save()
             .then(request => {
-                request.status(200).json(success({data:request}, "Create successful"));
+                res.status(200).json(success({data:request}, "Create successful"));
             })
             .catch(err => {
                 res.status(400).send('creating failed');
