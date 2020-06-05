@@ -18,10 +18,10 @@ tutorRoutes.get('/list/', tutor_controller.tutor_list_page);
 tutorRoutes.get('/create', tutor_controller.tutor_create_get);
 tutorRoutes.post('/create', tutor_controller.tutor_create_post);
 tutorRoutes.get('/find_one', tutor_controller.tutor_find_one);
-tutorRoutes.get('/:id/delete', tutor_controller.tutor_delete_get);
-tutorRoutes.post('/:id/delete', tutor_controller.tutor_delete_post);
-tutorRoutes.get('/:id/update', tutor_controller.tutor_update_get);
-tutorRoutes.post('/:id/update', tutor_controller.tutor_update_post);
+tutorRoutes.get('/delete/:id', tutor_controller.tutor_delete_get);
+tutorRoutes.post('/delete/:id', tutor_controller.tutor_delete_post);
+tutorRoutes.get('/update/:id', tutor_controller.tutor_update_get);
+tutorRoutes.post('/update/:id', tutor_controller.tutor_update_post);
 tutorRoutes.get('/:id', tutor_controller.tutor_detail);
 
 
@@ -33,10 +33,10 @@ studentRoutes.get('/list/', student_controller.student_list_page);
 studentRoutes.get('/create', student_controller.student_create_get);
 studentRoutes.post('/create', student_controller.student_create_post);
 studentRoutes.get('/find_one', student_controller.student_find_one);
-studentRoutes.get('/:id/delete', student_controller.student_delete_get);
-studentRoutes.post('/:id/delete', student_controller.student_delete_post);
-studentRoutes.get('/:id/update', student_controller.student_update_get);
-studentRoutes.post('/:id/update', student_controller.student_update_post);
+studentRoutes.get('/delete/:id', student_controller.student_delete_get);
+studentRoutes.post('/delete/:id', student_controller.student_delete_post);
+studentRoutes.get('/update/:id', student_controller.student_update_get);
+studentRoutes.post('/update/:id', student_controller.student_update_post);
 studentRoutes.get('/:id', student_controller.student_detail);
 
 module.exports = router;
