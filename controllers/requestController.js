@@ -47,7 +47,7 @@ exports.create_request = function(req, res, next) {
     request.student = req.user._id;
     request.location = req.body.location;
     request.subject = req.body.subject;
-    request.description = req.body.is_active;
+    request.description = req.body.description;
 
     // Ensure user role is student
 
