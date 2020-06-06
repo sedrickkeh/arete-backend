@@ -28,7 +28,7 @@ exports.login = function(req, res, next){
     });
 }
 
-exports.roleAuthorization = function(roles) {
+exports.roleAuth = function(roles) {
     return function(req, res, next){
         var user = req.user;
         User.findById(user._id, function(err, foundUser){
@@ -42,7 +42,7 @@ exports.roleAuthorization = function(roles) {
             }
 
             res.status(401).json({error: 'You are not authorized to view this content'});
-            return next('Unauthorized');
+            // return next('Unauthorized');
         });
     }
 }

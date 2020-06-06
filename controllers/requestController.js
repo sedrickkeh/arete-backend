@@ -42,32 +42,33 @@ exports.my_requests = function(req, res, next) {
 };
 
 exports.create_request = function(req, res, next) {
-    my_role = req.user.role;
-    if (my_role != "student") {
-        res.status(400).send("Only students can post requests!");
-    } else {
-        var request = new Request();
-        request.title = req.body.title;
-        request.student = req.user._id;
-        request.location = req.body.location;
-        request.subject = req.body.subject;
-        request.description = req.body.description;
-        request.is_active = true;
-        
-        request.save()
-            .then(request => {
-                res.status(200).json(success({data:request}, "Create successful"));
-            })
-            .catch(err => {
-                res.status(400).send('creating failed');
-            });
-    }
+    var request = new Request();
+    request.title = req.body.title;
+    request.student = req.user._id;
+    request.location = req.body.location;
+    request.subject = req.body.subject;
+    request.description = req.body.description;
+    request.is_active = true;
+    
+    request.save()
+        .then(request => {
+            res.status(200).json(success({data:request}, "Create successful"));
+        })
+        .catch(err => {
+            res.status(400).send('creating failed');
+        });
 };
 
 exports.delete_request = function(req, res, next) {
-    Request.findByIdAndRemove(req.params.id, function deleteRequest(err) {
-        if (err) {return next(err);}
-        res.status(200).json(success({data:""}, "Delete successful"));
+    Request.findById(req.params.id, function (err, request) {
+        if (err) {
+            return next(err);
+        } else if (String(request.student) != String(req.user._id) && req.user.role != "admin") {
+            res.status(401).send("Not authorized to do this action.");
+        } else {
+            request.remove();
+            res.status(200).json(success({data:""}, "Delete successful"));
+        }
     });
 };
 
@@ -75,6 +76,8 @@ exports.update_request = function(req, res, next) {
     Request.findById(req.params.id, function(err, request) {
         if (!request) {
             res.status(404).send("Request not found.");
+        } else if (String(request.student) != String(req.user._id) && req.user.role != "admin") {
+            res.status(401).send("Not authorized to do this action.");
         } else {
             request.title = req.body.title;
             request.location = req.body.location;
@@ -96,6 +99,8 @@ exports.deactivate = function(req, res, next) {
     Request.findById(req.params.id, function(err, request) {
         if (!request) {
             res.status(404).send("Request not found.");
+        } else if (String(request.student) != String(req.user._id) && req.user.role != "admin") {
+            res.status(401).send("Not authorized to do this action.");
         } else if (request.is_active == false) {
             res.status(400).send("Request already inactive.");
         } else {
@@ -115,6 +120,8 @@ exports.activate = function(req, res, next) {
     Request.findById(req.params.id, function(err, request) {
         if (!request) {
             res.status(404).send("Request not found.");
+        } else if (String(request.student) != String(req.user._id) && req.user.role != "admin") {
+            res.status(401).send("Not authorized to do this action.");
         } else if (request.is_active == true) {
             res.status(400).send("Request already active.");
         } else {
@@ -144,25 +151,20 @@ exports.get_details = function(req, res, next) {
 };
 
 exports.apply_for_request = function(req, res, next) {
-    my_role = req.user.role;
-    if (my_role != "tutor") {
-        res.status(400).send("Only tutors can apply for requests!");
-    } else {
-        Request.findById(req.params.id, function(err, request) {
-            if (!request) {
-                res.status(404).send("Request not found.");
-            } else if (request.tutors_applied.includes(req.user._id)) {
-                res.status(400).send("Already applied for this request.");
-            } else {
-                request.tutors_applied.push(req.user._id)
-                request.save()
-                    .then(request => {
-                        res.status(200).json(success({data:request}, "Application successful"));
-                    })
-                    .catch(err => {
-                        res.status(400).send('Application failed');
-                    });
-            }
-        });
-    }
+    Request.findById(req.params.id, function(err, request) {
+        if (!request) {
+            res.status(404).send("Request not found.");
+        } else if (request.tutors_applied.includes(req.user._id)) {
+            res.status(400).send("Already applied for this request.");
+        } else {
+            request.tutors_applied.push(req.user._id)
+            request.save()
+                .then(request => {
+                    res.status(200).json(success({data:request}, "Application successful"));
+                })
+                .catch(err => {
+                    res.status(400).send('Application failed');
+                });
+        }
+    });
 };

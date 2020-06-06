@@ -30,7 +30,7 @@ exports.tutor_rate_post = function(req, res, next) {
 
     Rating.findOne({student: rating.student, tutor:rating.tutor}, (err, rat) => {
         if(err) { return next(err);} 
-        if(rat) { res.status(400).send('Rating already exists');}
+        else if (rat) { res.status(400).send('Rating already exists');}
         else {
             rating.save()
             .then(rating => {

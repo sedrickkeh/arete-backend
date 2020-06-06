@@ -187,6 +187,8 @@ exports.tutor_update_post = (upload.single('tutorImage'), (req, res, next) => {
     Tutor.findById(req.params.id, function(err, tutor) {
         if (!tutor) {
             res.status(404).send("Tutor not found.");
+        } else if (String(tutor._id) != String(req.user._id) && req.user.role != "admin") {
+            res.status(401).send("Not authorized to do this action.");
         } else {
             // Login Info
             tutor.email = req.body.email;

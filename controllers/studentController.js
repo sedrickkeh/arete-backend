@@ -160,6 +160,8 @@ exports.student_update_post = function(req, res, next) {
     Student.findById(req.params.id, function(err, student) {
         if (!student) {
             res.status(404).send("Student not found.");
+        } else if (String(student._id) != String(req.user._id) && req.user.role != "admin") {
+            res.status(401).send("Not authorized to do this action.");
         } else {
             // Login Info
             student.email = req.body.email;
