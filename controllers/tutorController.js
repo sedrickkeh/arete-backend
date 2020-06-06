@@ -190,11 +190,6 @@ exports.tutor_update_post = (upload.single('tutorImage'), (req, res, next) => {
         } else if (String(tutor._id) != String(req.user._id) && req.user.role != "admin") {
             res.status(401).send("Not authorized to do this action.");
         } else {
-            // Login Info
-            tutor.email = req.body.email;
-            tutor.password = req.body.password;
-            tutor.role = "tutor"
-
             // General Info
             tutor.title = req.body.title;
             tutor.name = req.body.name;

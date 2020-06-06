@@ -163,10 +163,6 @@ exports.student_update_post = function(req, res, next) {
         } else if (String(student._id) != String(req.user._id) && req.user.role != "admin") {
             res.status(401).send("Not authorized to do this action.");
         } else {
-            // Login Info
-            student.email = req.body.email;
-            student.password = req.body.password;
-
             // General Info
             student.title = req.body.title;
             student.name = req.body.name;

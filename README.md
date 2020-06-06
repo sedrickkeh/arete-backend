@@ -25,9 +25,12 @@ This runs the files with nodemon so live changes are reflected.
 ## New Todo:
 - [ ] Populate location/tutors/etc in return responses
 - [ ] Images
-- [ ] Admin and other permission issues
+- [x] Permissions in the right places
+- [ ] admin account create
 - [ ] reset password
 - [ ] change pasword
 - [ ] only allow create new acct if not logged in
 - [ ] .env for confidential information
 - [ ] **Rating update ave scores**
+- [x] do we allow people to change email address?
+- [ ] consistent error handling/return statements
