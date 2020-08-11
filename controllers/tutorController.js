@@ -106,37 +106,40 @@ exports.tutor_create_post = ((req, res, next) =>{
 
     // Login Info
     tutor.email = req.body.email;
-    tutor.password = req.body.password;
+    tutor.password1 = req.body.password1;
+    tutor.password2 = req.body.password2;
     tutor.role = "tutor"
 
-    // General Info
-    tutor.title = req.body.title;
-    tutor.name = req.body.name;
-    tutor.pref_name = req.body.pref_name;
-    tutor.gender = req.body.gender;
-    tutor.age = req.body.age;
-    tutor.contact_number = req.body.contact_number;
+    // // General Info
+    // tutor.title = req.body.title;
+    // tutor.name = req.body.name;
+    // tutor.pref_name = req.body.pref_name;
+    // tutor.gender = req.body.gender;
+    // tutor.age = req.body.age;
+    // tutor.contact_number = req.body.contact_number;
 
-    // Learning-related Info
-    tutor.location = req.body.location;
-    tutor.hourly_rate = req.body.hourly_rate;
-    tutor.preference = req.body.preference;
-    tutor.subjects = req.body.subjects;
-    tutor.time = req.body.time;
+    // // Learning-related Info
+    // tutor.location = req.body.location;
+    // tutor.hourly_rate = req.body.hourly_rate;
+    // tutor.preference = req.body.preference;
+    // tutor.subjects = req.body.subjects;
+    // tutor.time = req.body.time;
 
-    // Tutor-specific Info
-    tutor.examination_tutor = req.body.examination_tutor;
-    tutor.overall_score = req.body.overall_score;
-    tutor.detailed_scores = req.body.detailed_scores;
-    tutor.experience = req.body.experience;
-    tutor.licensed = req.body.licensed;
-    tutor.university_name = req.body.university_name;
-    tutor.university_program = req.body.university_program;
-    tutor.self_introduction = req.body.self_introduction;
+    // // Tutor-specific Info
+    // tutor.examination_tutor = req.body.examination_tutor;
+    // tutor.overall_score = req.body.overall_score;
+    // tutor.detailed_scores = req.body.detailed_scores;
+    // tutor.experience = req.body.experience;
+    // tutor.licensed = req.body.licensed;
+    // tutor.university_name = req.body.university_name;
+    // tutor.university_program = req.body.university_program;
+    // tutor.self_introduction = req.body.self_introduction;
 
     // Check missing fields
     if(!tutor.email) {return res.status(422).send({error: 'You must enter an email address'});}
-    if(!tutor.password) {return res.status(422).send({error: 'You must enter a password'});}
+    if(!tutor.password1) {return res.status(422).send({error: 'You must enter a password'});}
+    if(!tutor.password2) {return res.status(422).send({error: 'You must confirm your password'})}
+    if(tutor.password1 !== tutor.password2) {return res.status(422).send({error: 'Passwords do not match'})}
 
     Tutor.findOne({email: tutor.email}, function(err, existingUser){
         if(err) {return next(err);}
@@ -191,29 +194,29 @@ exports.tutor_update_post = (upload.single('tutorImage'), (req, res, next) => {
             res.status(401).send("Not authorized to do this action.");
         } else {
             // General Info
-            tutor.title = req.body.title;
-            tutor.name = req.body.name;
-            tutor.pref_name = req.body.pref_name;
-            tutor.gender = req.body.gender;
-            tutor.age = req.body.age;
-            tutor.contact_number = req.body.contact_number;
+            if (req.body.title) tutor.title = req.body.title;
+            if (req.body.name) tutor.name = req.body.name;
+            if (req.body.pref_name) tutor.pref_name = req.body.pref_name;
+            if (req.body.gender) tutor.gender = req.body.gender;
+            if (req.body.age) tutor.age = req.body.age;
+            if (req.body.contact_number) tutor.contact_number = req.body.contact_number;
 
             // Learning-related Info
-            tutor.location = req.body.location;
-            tutor.hourly_rate = req.body.hourly_rate;
-            tutor.preference = req.body.preference;
-            tutor.subjects = req.body.subjects;
-            tutor.time = req.body.time;
+            if (req.body.location) tutor.location = req.body.location;
+            if (req.body.hourly_rate) tutor.hourly_rate = req.body.hourly_rate;
+            if (req.body.preference) tutor.preference = req.body.preference;
+            if (req.body.subjects) tutor.subjects = req.body.subjects;
+            if (req.body.title) tutor.time = req.body.time;
 
             // Tutor-specific Info
-            tutor.examination_tutor = req.body.examination_tutor;
-            tutor.overall_score = req.body.overall_score;
-            tutor.detailed_scores = req.body.detailed_scores;
-            tutor.experience = req.body.experience;
-            tutor.licensed = req.body.licensed;
-            tutor.university_name = req.body.university_name;
-            tutor.university_program = req.body.university_program;
-            tutor.self_introduction = req.body.self_introduction;
+            if (req.body.examination_tutor) tutor.examination_tutor = req.body.examination_tutor;
+            if (req.body.overall_score) tutor.overall_score = req.body.overall_score;
+            if (req.body.detailed_scores) tutor.detailed_scores = req.body.detailed_scores;
+            if (req.body.experience) tutor.experience = req.body.experience;
+            if (req.body.licensed) tutor.licensed = req.body.licensed;
+            if (req.body.university_name) tutor.university_name = req.body.university_name;
+            if (req.body.university_program) tutor.university_program = req.body.university_program;
+            if (req.body.self_introduction) tutor.self_introduction = req.body.self_introduction;
     
             tutor.save()
                 .then(tutor => {

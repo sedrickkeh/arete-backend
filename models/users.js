@@ -6,26 +6,27 @@ var UserSchema = new Schema(
     {
         // Login Info
         email: {type:String, required:true},
-        password: {type:String, required:true},
+        password1: {type:String, required:true},
+        password2: {type:String,required:true},
         role: {type: String,
             enum: ['student', 'tutor', 'admin'],
             default: 'student'
         },
 
         // General Info
-        title: {type:String, required:true},
-        name: {type:String, required:true},
+        title: {type:String},
+        name: {type:String},
         pref_name: {type:String},
         user_id: {type:Number, default:-1},
-        gender: {type:String, required:true},
-        age: {type:Number, required:true},
-        contact_number: {type:String, required:true},
+        gender: {type:String},
+        age: {type:Number},
+        contact_number: {type:String},
 
 
         // Learning-related
         location: [{type: Schema.Types.ObjectId, ref:'Location'}],
         hourly_rate: {type:Number},
-        preference: {type:String, required:true},
+        preference: {type:String},
         subjects: [String],
         time: [String],
 
@@ -63,14 +64,20 @@ UserSchema.pre('save', function(next){
     var user = this;
     var SALT_FACTOR = 5;
 
-    if(!user.isModified('password')) {return next();} 
+    if(!user.isModified('password1')) {return next();} 
 
     bcrypt.genSalt(SALT_FACTOR, function(err, salt){
         if(err) {return next(err);}
 
-        bcrypt.hash(user.password, salt, null, function(err, hash){
+        bcrypt.hash(user.password1, salt, null, function(err, hash){
             if(err) {return next(err);}
-            user.password = hash;
+            user.password1 = hash;
+            next();
+        });
+
+        bcrypt.hash(user.password2, salt, null, function(err, hash){
+            if(err) {return next(err);}
+            user.password2 = hash;
             next();
         });
     });
@@ -78,7 +85,7 @@ UserSchema.pre('save', function(next){
 
 
 UserSchema.methods.comparePassword = function(passwordAttempt, cb){
-    bcrypt.compare(passwordAttempt, this.password, function(err, isMatch) {
+    bcrypt.compare(passwordAttempt, this.password1, function(err, isMatch) {
         if(err){
             return cb(err);
         } else {
