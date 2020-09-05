@@ -9,7 +9,7 @@ var student_controller = require('../controllers/studentController');
 var requireAuth = passport.authenticate('jwt', {session: false})
 var requireLogin = passport.authenticate('local', {session: false});
 
-
+router.get('/', requireAuth, auth_controller.login_status);
 router.post('/login', requireLogin, auth_controller.login);
 
 router.post('/register/student', student_controller.student_create_post);
