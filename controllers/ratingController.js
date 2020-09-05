@@ -5,19 +5,25 @@ var {success} = require('../tools/responseSender');
 
 
 exports.ratings_given = function(req, res, next) {
-    Rating.find({student:req.user._id}).exec((err, list_ratings) => {
-        if (err) {return next(err);}
-        res.json(success({data:list_ratings}));
-    });
+    Rating.find({student:req.user._id})
+        .populate('student')
+        .populate('tutor')
+        .exec((err, list_ratings) => {
+            if (err) {return next(err);}
+            res.json(success({data:list_ratings}));
+        });
 };
 
 exports.ratings_received = function(req, res, next) {
     // Ensure that id being searched is a tutor
 
-    Rating.find({tutor:req.params.id}).exec((err, list_ratings) => {
-        if (err) {return next(id);}
-        res.json(success({data:list_ratings}));
-    });
+    Rating.find({tutor:req.params.id})
+        .populate('student')
+        .populate('tutor')
+        .exec((err, list_ratings) => {
+            if (err) {return next(err);}
+            res.json(success({data:list_ratings}));
+        });
 };
 
 

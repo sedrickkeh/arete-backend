@@ -20,6 +20,13 @@ function setUserInfo(request){
 exports.generateToken = generateToken;
 exports.setUserInfo = setUserInfo;
 
+exports.login_status = function(req, res, next) {
+    var userInfo = req.user;
+    res.status(200).json({
+        user: userInfo
+    });
+}
+
 exports.login = function(req, res, next){
     var userInfo = setUserInfo(req.user);
     res.status(200).json({
