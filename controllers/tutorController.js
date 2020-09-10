@@ -112,7 +112,7 @@ exports.tutor_create_post = ((req, res, next) =>{
 
     // // General Info
     // tutor.title = req.body.title;
-    // tutor.name = req.body.name;
+    tutor.name = req.body.name;
     // tutor.pref_name = req.body.pref_name;
     // tutor.gender = req.body.gender;
     // tutor.age = req.body.age;
@@ -140,6 +140,7 @@ exports.tutor_create_post = ((req, res, next) =>{
     if(!tutor.password1) {return res.status(422).send({error: 'You must enter a password'});}
     if(!tutor.password2) {return res.status(422).send({error: 'You must confirm your password'})}
     if(tutor.password1 !== tutor.password2) {return res.status(422).send({error: 'Passwords do not match'})}
+    if(!tutor.name) {return res.status(422).send({error: 'You must enter a name'});}
 
     Tutor.findOne({email: tutor.email}, function(err, existingUser){
         if(err) {return next(err);}

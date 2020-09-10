@@ -84,7 +84,7 @@ exports.student_create_post = function(req, res, next) {
 
     // // General Info
     // student.title = req.body.title;
-    // student.name = req.body.name;
+    student.name = req.body.name;
     // student.pref_name = req.body.pref_name;
     // student.gender = req.body.gender;
     // student.age = req.body.age;
@@ -113,6 +113,7 @@ exports.student_create_post = function(req, res, next) {
     if(!student.password1) {return res.status(422).send({error: 'You must enter a password'});}
     if(!student.password2) {return res.status(422).send({error: 'You must confirm your password'})}
     if(student.password1 !== student.password2) {return res.status(422).send({error: 'Passwords do not match'})}
+    if(!student.name) {return res.status(422).send({error: 'You must enter a name'});}
 
     Student.findOne({email: student.email}, function(err, existingUser){
         if(err) {return next(err);}
