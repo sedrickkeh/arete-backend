@@ -207,7 +207,7 @@ exports.tutor_update_post = (upload.single('tutorImage'), (req, res, next) => {
             if (req.body.hourly_rate) tutor.hourly_rate = req.body.hourly_rate;
             if (req.body.preference) tutor.preference = req.body.preference;
             if (req.body.subjects) tutor.subjects = req.body.subjects;
-            if (req.body.title) tutor.time = req.body.time;
+            if (req.body.time) tutor.time = req.body.time;
 
             // Tutor-specific Info
             if (req.body.examination_tutor) tutor.examination_tutor = req.body.examination_tutor;
