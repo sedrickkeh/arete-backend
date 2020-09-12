@@ -1,4 +1,4 @@
-var Tutor = require('../models/users');
+var Tutor = require('../models/profile');
 var Location = require('../models/location');
 var idschema = require('../tools/idSchema');
 var multer = require('multer');
@@ -105,62 +105,42 @@ exports.tutor_create_post = ((req, res, next) =>{
     var tutor = new Tutor();
 
     // Login Info
-    tutor.email = req.body.email;
-    tutor.password1 = req.body.password1;
-    tutor.password2 = req.body.password2;
-    tutor.role = "tutor"
+    tutor.user = req.user._id;
+    tutor.role = "tutor";
+    tutor.name = req.user.name;
+    tutor.email = req.user.email;
 
-    // // General Info
-    // tutor.title = req.body.title;
-    tutor.name = req.body.name;
-    // tutor.pref_name = req.body.pref_name;
-    // tutor.gender = req.body.gender;
-    // tutor.age = req.body.age;
-    // tutor.contact_number = req.body.contact_number;
+    // General Info
+    tutor.title = req.body.title;
+    tutor.pref_name = req.body.pref_name;
+    tutor.gender = req.body.gender;
+    tutor.birth_year = req.body.birth_year;
+    tutor.contact_number = req.body.contact_number;
 
-    // // Learning-related Info
-    // tutor.location = req.body.location;
-    // tutor.hourly_rate = req.body.hourly_rate;
-    // tutor.preference = req.body.preference;
-    // tutor.subjects = req.body.subjects;
-    // tutor.time = req.body.time;
+    // Learning-related Info
+    tutor.location = req.body.location;
+    tutor.hourly_rate = req.body.hourly_rate;
+    tutor.preference = req.body.preference;
+    tutor.subjects = req.body.subjects;
+    tutor.time = req.body.time;
 
-    // // Tutor-specific Info
-    // tutor.examination_tutor = req.body.examination_tutor;
-    // tutor.overall_score = req.body.overall_score;
-    // tutor.detailed_scores = req.body.detailed_scores;
-    // tutor.experience = req.body.experience;
-    // tutor.licensed = req.body.licensed;
-    // tutor.university_name = req.body.university_name;
-    // tutor.university_program = req.body.university_program;
-    // tutor.self_introduction = req.body.self_introduction;
+    // Tutor-specific Info
+    tutor.examination_tutor = req.body.examination_tutor;
+    tutor.overall_score = req.body.overall_score;
+    tutor.detailed_scores = req.body.detailed_scores;
+    tutor.experience = req.body.experience;
+    tutor.licensed = req.body.licensed;
+    tutor.university_name = req.body.university_name;
+    tutor.university_program = req.body.university_program;
+    tutor.self_introduction = req.body.self_introduction;
 
-    // Check missing fields
-    if(!tutor.email) {return res.status(422).send({error: 'You must enter an email address'});}
-    if(!tutor.password1) {return res.status(422).send({error: 'You must enter a password'});}
-    if(!tutor.password2) {return res.status(422).send({error: 'You must confirm your password'})}
-    if(tutor.password1 !== tutor.password2) {return res.status(422).send({error: 'Passwords do not match'})}
-    if(!tutor.name) {return res.status(422).send({error: 'You must enter a name'});}
-
-    Tutor.findOne({email: tutor.email}, function(err, existingUser){
-        if(err) {return next(err);}
-        if(existingUser) {return res.status(422).send({error: 'That email address is already in use'});}
-
-        idschema.find({name:"Tutor"})
-        .exec(function(err, tutorcntr) {
-            tutorcntr[0].count += 1;
-            tutorcntr[0].save()
-            tutor.user_id = tutorcntr[0].count;
-            tutor.save(function(err, user) {
-                if (err) {return next(err);}
-                var userInfo = setUserInfo(user);
-                res.status(201).json({
-                    token: 'JWT ' + generateToken(userInfo),
-                    user: userInfo
-                })
-            })
+    tutor.save()
+        .then(tutor => {
+            res.status(200).json(success({data:tutor}));
+        })
+        .catch(err => {
+            res.status(400).send('creating failed');
         });
-    });
 });
 
 exports.tutor_delete_get = ((req, res, next) => {
@@ -191,15 +171,19 @@ exports.tutor_update_post = (upload.single('tutorImage'), (req, res, next) => {
     Tutor.findById(req.params.id, function(err, tutor) {
         if (!tutor) {
             res.status(404).send("Tutor not found.");
-        } else if (String(tutor._id) != String(req.user._id) && req.user.role != "admin") {
+        } else if (String(tutor.user._id) != String(req.user._id) && req.user.role != "admin") {
             res.status(401).send("Not authorized to do this action.");
         } else {
+            // Login Info
+            // Login info can be changed in user update.
+            tutor.name = req.user.name;
+            tutor.email = req.user.email;
+
             // General Info
             if (req.body.title) tutor.title = req.body.title;
-            if (req.body.name) tutor.name = req.body.name;
             if (req.body.pref_name) tutor.pref_name = req.body.pref_name;
             if (req.body.gender) tutor.gender = req.body.gender;
-            if (req.body.age) tutor.age = req.body.age;
+            if (req.body.birth_year) tutor.birth_year = req.body.birth_year;
             if (req.body.contact_number) tutor.contact_number = req.body.contact_number;
 
             // Learning-related Info

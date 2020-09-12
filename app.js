@@ -6,6 +6,7 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var profilesRouter = require('./routes/profiles');
 //var { handleError, ErrorHandler } = require('./helpers/error')
 var locationsRouter = require('./routes/locations');
 var contactRouter = require('./routes/contact');
@@ -42,6 +43,7 @@ app.use((req, res, next)=>{
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/profiles', profilesRouter);
 app.use('/ratings', ratingRouter);
 app.use('/requests', requestRouter);
 app.use('/locations', locationsRouter);
