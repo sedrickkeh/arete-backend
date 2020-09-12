@@ -3,8 +3,7 @@ var router = express.Router();
 var passport = require('passport')
 var passportService = require('../configs/passport')
 var auth_controller = require('../controllers/authController');
-var tutor_controller = require('../controllers/tutorController');
-var student_controller = require('../controllers/studentController');
+var user_controller = require('../controllers/userController');
 
 var requireAuth = passport.authenticate('jwt', {session: false})
 var requireLogin = passport.authenticate('local', {session: false});
@@ -12,7 +11,7 @@ var requireLogin = passport.authenticate('local', {session: false});
 router.get('/', requireAuth, auth_controller.login_status);
 router.post('/login', requireLogin, auth_controller.login);
 
-router.post('/register/student', student_controller.student_create_post);
-router.post('/register/tutor', tutor_controller.tutor_create_post);
+router.post('/register/student', user_controller.user_create_student);
+router.post('/register/tutor', user_controller.user_create_tutor);
 
 module.exports = router;
