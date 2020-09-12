@@ -32,7 +32,7 @@ router.use('/student', studentRoutes);
 studentRoutes.get('/list/all', student_controller.student_list);
 studentRoutes.get('/list/', student_controller.student_list_page);
 studentRoutes.get('/create', student_controller.student_create_get);
-studentRoutes.post('/create', student_controller.student_create_post);
+studentRoutes.post('/create', requireAuth, auth_controller.roleAuth(['student', 'admin']), student_controller.student_create_post);
 studentRoutes.get('/find_one', student_controller.student_find_one);
 studentRoutes.get('/delete/:id', requireAuth, auth_controller.roleAuth(['admin']), student_controller.student_delete_get);
 studentRoutes.post('/delete/:id', requireAuth, auth_controller.roleAuth(['admin']), student_controller.student_delete_post);
