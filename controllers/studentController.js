@@ -97,11 +97,11 @@ exports.student_create_post = function(req, res, next) {
     student.time = req.body.time;
 
     // Student-specific Info
-    student.contact.title = req.body.contact.title;
-    student.contact.name = req.body.contact.name;
-    student.contact.contact_number = req.body.contact.contact_number;
-    student.contact.email = req.body.contact.email;
-    student.contact.relationship = req.body.contact.relationship;
+    if (req.body.contact) student.contact.title = req.body.contact.title;
+    if (req.body.contact) student.contact.name = req.body.contact.name;
+    if (req.body.contact) student.contact.contact_number = req.body.contact.contact_number;
+    if (req.body.contact) student.contact.email = req.body.contact.email;
+    if (req.body.contact) student.contact.relationship = req.body.contact.relationship;
     student.school = req.body.school
     student.year = req.body.year
     student.examination_student = req.body.examination_student
