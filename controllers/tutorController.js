@@ -1,3 +1,4 @@
+var User = require('../models/users');
 var Tutor = require('../models/profile');
 var Location = require('../models/location');
 var idschema = require('../tools/idSchema');
@@ -134,14 +135,23 @@ exports.tutor_create_post = ((req, res, next) =>{
     tutor.university_program = req.body.university_program;
     tutor.self_introduction = req.body.self_introduction;
 
+
+    User.findOne({_id: req.user._id}, function(err, existingUser){
+        if(err) {return next(err);}
+        if(!existingUser) {return res.status(404).send({error: 'No such user!'});}
+
     tutor.save()
         .then(tutor => {
+            existingUser.profile_id = tutor._id;
+            existingUser.save();
             res.status(200).json(success({data:tutor}));
         })
         .catch(err => {
             res.status(400).send('creating failed');
         });
 });
+});
+
 
 exports.tutor_delete_get = ((req, res, next) => {
     res.send('Delete GET not needed at this point');

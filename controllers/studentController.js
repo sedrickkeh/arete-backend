@@ -1,3 +1,4 @@
+var User = require('../models/users');
 var Student = require('../models/profile');
 var Location = require('../models/location');
 var idschema = require('../tools/idSchema');
@@ -107,13 +108,20 @@ exports.student_create_post = function(req, res, next) {
     student.examination_student = req.body.examination_student
     student.description = req.body.description
 
-    student.save()
-    .then(student => {
-        res.status(200).json(success({data:student}));
-    })
-    .catch(err => {
-        res.status(400).send('creating failed');
-    });
+    User.findOne({_id: req.user._id}, function(err, existingUser){
+        if(err) {return next(err);}
+        if(!existingUser) {return res.status(404).send({error: 'No such user!'});}
+
+        student.save()
+        .then(student => {
+            existingUser.profile_id = student._id;
+            existingUser.save();
+            res.status(200).json(success({data:student}));
+        })
+        .catch(err => {
+            res.status(400).send('creating failed');
+        });
+    });  
 };
 
 exports.student_delete_get = function(req, res, next) {

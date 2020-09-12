@@ -15,7 +15,8 @@ var UserSchema = new Schema(
 
         // User Info
         name: {type: String, required:true},
-        user_id: {type:Number, default:-1}
+        user_id: {type:Number, default:-1},
+        profile_id: {type:String, default:-1}
         
     }, {
         timestamps: true
