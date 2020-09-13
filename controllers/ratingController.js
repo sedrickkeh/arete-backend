@@ -8,7 +8,7 @@ const { schema } = require('../models/profile');
 
 
 exports.ratings_given = function(req, res, next) {
-    Rating.find({student:req.user._id})
+    Rating.find({student:req.user.profile_id})
         .populate('student')
         .populate('tutor')
         .exec((err, list_ratings) => {
