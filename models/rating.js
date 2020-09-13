@@ -3,9 +3,11 @@ var Schema = mongoose.Schema;
 
 var RatingSchema = new Schema(
     {
-        student: {type: Schema.Types.ObjectId, ref:'User'},
-        tutor: {type: Schema.Types.ObjectId, ref:'User'},
-        score: {type:Number, required:true},
+        student: {type: Schema.Types.ObjectId, ref:'Profile'},
+        tutor: {type: Schema.Types.ObjectId, ref:'Profile'},
+        score: {type:Number, 
+                enum: [1,2,3,4,5], 
+                required:true},
         comments: {type:String}
     }
 );

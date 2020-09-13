@@ -11,7 +11,7 @@ var requireLogin = passport.authenticate('local', {session: false});
 router.get('/given', requireAuth, auth_controller.roleAuth(['student']), rating_controller.ratings_given);
 router.get('/received/:id', rating_controller.ratings_received);
 
-router.post('/rate/:id', requireAuth, auth_controller.roleAuth(['student','admin']), rating_controller.tutor_rate_post);
+router.post('/rate/:id', requireAuth, auth_controller.roleAuth(['student','admin']), rating_controller.make_rating);
 
 
 module.exports = router;

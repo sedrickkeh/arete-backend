@@ -37,8 +37,17 @@ var ProfileSchema = new Schema(
         university_name: {type:String},
         university_program: {type:String},
         self_introduction: {type:String},
-        num_ratings: {type:Number},
-        ave_rating: {type:Number},
+        
+        // Rating-related
+        num_ones: {type:Number},
+        num_twos: {type:Number},
+        num_threes: {type:Number},
+        num_fours: {type:Number},
+        num_fives: {type:Number},
+        num_reviews: {type:Number},
+        num_ones: {type:Number},
+        average_rating: {type:Number},
+
 
         // Student Only
         contact: {

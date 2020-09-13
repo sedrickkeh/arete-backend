@@ -135,12 +135,20 @@ exports.tutor_create_post = ((req, res, next) =>{
     tutor.university_program = req.body.university_program;
     tutor.self_introduction = req.body.self_introduction;
 
+    // Rating-related
+    tutor.num_ones = 0;
+    tutor.num_twos = 0;
+    tutor.num_threes = 0;
+    tutor.num_fours = 0;
+    tutor.num_fives = 0;
+    tutor.num_reviews = 0;
+    tutor.average_rating = -1;
 
     User.findOne({_id: req.user._id}, function(err, existingUser){
         if(err) {return next(err);}
         if(!existingUser) {return res.status(404).send({error: 'No such user!'});}
 
-    tutor.save()
+        tutor.save()
         .then(tutor => {
             existingUser.profile_id = tutor._id;
             existingUser.save();
@@ -149,7 +157,7 @@ exports.tutor_create_post = ((req, res, next) =>{
         .catch(err => {
             res.status(400).send('creating failed');
         });
-});
+    });  
 });
 
 
