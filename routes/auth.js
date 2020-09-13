@@ -13,5 +13,6 @@ router.post('/login', requireLogin, auth_controller.login);
 
 router.post('/register/student', user_controller.user_create_student);
 router.post('/register/tutor', user_controller.user_create_tutor);
+router.post('/register/admin', user_controller.user_create_admin);
 
 module.exports = router;
