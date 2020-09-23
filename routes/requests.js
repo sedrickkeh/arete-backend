@@ -8,17 +8,19 @@ var auth_controller = require('../controllers/authController')
 var requireAuth = passport.authenticate('jwt', {session: false});
 var requireLogin = passport.authenticate('local', {session: false});
 
-router.get('/list', request_controller.request_list);
-router.get('/list/active', request_controller.request_list_active);
-router.get('/list/my_requests', requireAuth, request_controller.my_requests);
 
-router.post('/create', requireAuth, auth_controller.roleAuth(['student','admin']), request_controller.create_request);
-router.post('/delete/:id', requireAuth, auth_controller.roleAuth(['student','admin']), request_controller.delete_request);
-router.post('/update/:id', requireAuth, auth_controller.roleAuth(['student','admin']), request_controller.update_request);
-router.post('/deactivate/:id', requireAuth, auth_controller.roleAuth(['student', 'admin']), request_controller.deactivate);
-router.post('/activate/:id', requireAuth, auth_controller.roleAuth(['student','admin']), request_controller.activate);
-router.get('/:id', request_controller.get_details);
+router.get('/list/all', requireAuth, auth_controller.roleAuth(['admin']), request_controller.list_all);
+router.get('/list/pending', requireAuth, auth_controller.roleAuth(['admin']), request_controller.list_pending);
+router.get('/list/accepted', requireAuth, auth_controller.roleAuth(['admin']), request_controller.list_accepted);
+router.get('/list/completed', requireAuth, auth_controller.roleAuth(['admin']), request_controller.list_completed);
+router.get('/list/tutor/my_requests', requireAuth, auth_controller.roleAuth(['tutor']), request_controller.tutor_requests);
+router.get('/list/student/my_requests', requireAuth, auth_controller.roleAuth(['student']), request_controller.student_requests);
+router.get('/find/:id', requireAuth, auth_controller.roleAuth(['student', 'tutor', 'admin']), request_controller.find_request);
 
-router.post('/apply/:id', requireAuth, auth_controller.roleAuth(['tutor','admin']), request_controller.apply_for_request);
+router.post('/create/:id', requireAuth, auth_controller.roleAuth(['student', 'admin']), request_controller.create_request);
+router.post('/set/pending/:id', requireAuth, auth_controller.roleAuth(['admin']), request_controller.set_pending);
+router.post('/set/accepted/:id', requireAuth, auth_controller.roleAuth(['admin']), request_controller.set_accepted);
+router.post('/set/completed/:id', requireAuth, auth_controller.roleAuth(['admin']), request_controller.set_completed);
+
 
 module.exports = router;

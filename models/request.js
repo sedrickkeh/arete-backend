@@ -3,14 +3,14 @@ var Schema = mongoose.Schema;
 
 var RequestSchema = new Schema(
     {
-        title: {type:String, required:true},
-        student: {type: Schema.Types.ObjectId, ref:'User'},
-        location: [{type: Schema.Types.ObjectId, ref:'Location'}],
-        subject: {type:String, required:true},
-        description: {type:String, required:true},
-
-        tutors_applied: [{type: Schema.Types.ObjectId, ref:'User'}],
-        is_active: {type:Boolean, default:true}
+        student: {type: Schema.Types.ObjectId, ref:'Profile'},
+        tutor: {type: Schema.Types.ObjectId, ref:'Profile'},
+        status: {type: String, 
+                enum: ["pending", "accepted", "completed"], 
+                required:true},
+        subject: {type:String}
+    }, {
+        timestamps: true
     }
 );
 

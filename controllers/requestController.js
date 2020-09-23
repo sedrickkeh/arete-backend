@@ -1,143 +1,67 @@
-var Tutor = require('../models/users');
+var Tutor = require('../models/profile');
 var Request = require('../models/request');
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 
 var {success} = require('../tools/responseSender');
 
-
-exports.request_list = function(req, res, next) {
+exports.list_all = function(req, res, next) {
     Request.find()
+        .populate('student')
+        .populate('tutor')
         .exec(function(err, list_requests) {
             if (err) {return next(err);}
             res.json(success({data:list_requests}));
         });
 };
 
-exports.request_list_active = function(req, res, next) {
-    Request.find({is_active:true})
+exports.list_pending = function(req, res, next) {
+    Request.find({status:"pending"})
+        .populate('student')
+        .populate('tutor')
         .exec(function(err, list_requests) {
             if (err) {return next(err);}
             res.json(success({data:list_requests}));
         });
 };
 
-exports.my_requests = function(req, res, next) {
-    my_role = req.user.role;
-
-    // If user is a student
-    if (my_role == "student") {
-        Request.find({student:req.user._id})
-            .exec(function(err, list_requests) {
-                if (err) {return next(err);}
-                res.json(success({data:list_requests}));
-            });
-    } 
-    // If user is a tutor
-    else { 
-        Request.find({tutors_applied:req.user._id})
-            .exec(function(err, list_requests) {
-                if (err) {return next(err);}
-                res.json(success({data:list_requests}));
-            });
-    }
-};
-
-exports.create_request = function(req, res, next) {
-    var request = new Request();
-    request.title = req.body.title;
-    request.student = req.user._id;
-    request.location = req.body.location;
-    request.subject = req.body.subject;
-    request.description = req.body.description;
-    request.is_active = true;
-    
-    request.save()
-        .then(request => {
-            res.status(200).json(success({data:request}, "Create successful"));
-        })
-        .catch(err => {
-            res.status(400).send('creating failed');
+exports.list_accepted = function(req, res, next) {
+    Request.find({status:"accepted"})
+        .populate('student')
+        .populate('tutor')
+        .exec(function(err, list_requests) {
+            if (err) {return next(err);}
+            res.json(success({data:list_requests}));
         });
 };
 
-exports.delete_request = function(req, res, next) {
-    Request.findById(req.params.id, function (err, request) {
-        if (err) {
-            return next(err);
-        } else if (String(request.student) != String(req.user._id) && req.user.role != "admin") {
-            res.status(401).send("Not authorized to do this action.");
-        } else {
-            request.remove();
-            res.status(200).json(success({data:""}, "Delete successful"));
-        }
-    });
+exports.list_completed = function(req, res, next) {
+    Request.find({status:"completed"})
+        .populate('student')
+        .populate('tutor')
+        .exec(function(err, list_requests) {
+            if (err) {return next(err);}
+            res.json(success({data:list_requests}));
+        });
 };
 
-exports.update_request = function(req, res, next) {
-    Request.findById(req.params.id, function(err, request) {
-        if (!request) {
-            res.status(404).send("Request not found.");
-        } else if (String(request.student) != String(req.user._id) && req.user.role != "admin") {
-            res.status(401).send("Not authorized to do this action.");
-        } else {
-            request.title = req.body.title;
-            request.location = req.body.location;
-            request.subject = req.body.subject;
-            request.description = req.body.description;
-
-            request.save()
-                .then(request => {
-                    res.status(200).json(success({data:request}, "Update successful"));
-                })
-                .catch(err => {
-                    res.status(400).send('Updating failed');
-                });
-        }
-    })
+exports.student_requests = function(req, res, next) {
+    Request.find({student:req.user.profile_id})
+        .exec((err, list_requests) => {
+            if (err) {return next(err);}
+            res.json(success({data:list_requests}));
+        });
 };
 
-exports.deactivate = function(req, res, next) {
-    Request.findById(req.params.id, function(err, request) {
-        if (!request) {
-            res.status(404).send("Request not found.");
-        } else if (String(request.student) != String(req.user._id) && req.user.role != "admin") {
-            res.status(401).send("Not authorized to do this action.");
-        } else if (request.is_active == false) {
-            res.status(400).send("Request already inactive.");
-        } else {
-            request.is_active = false;
-            request.save()
-                .then(request => {
-                    res.status(200).json(success({data:request}, "Deactivate successful"));
-                })
-                .catch(err => {
-                    res.status(400).send('Deactivation failed');
-                });
-        }
-    });
+exports.tutor_requests = function(req, res, next) {
+    Request.find({tutor:req.user.profile_id})
+        .exec((err, list_requests) => {
+            if (err) {return next(err);}
+            res.json(success({data:list_requests}));
+        });
 };
 
-exports.activate = function(req, res, next) {
-    Request.findById(req.params.id, function(err, request) {
-        if (!request) {
-            res.status(404).send("Request not found.");
-        } else if (String(request.student) != String(req.user._id) && req.user.role != "admin") {
-            res.status(401).send("Not authorized to do this action.");
-        } else if (request.is_active == true) {
-            res.status(400).send("Request already active.");
-        } else {
-            request.is_active = true;
-            request.save()
-                .then(request => {
-                    res.status(200).json(success({data:request}, "Activate successful"));
-                })
-                .catch(err => {
-                    res.status(400).send('Activation failed');
-                });
-        }
-    });
-};
-
-exports.get_details = function(req, res, next) {
+exports.find_request = function(req, res, next) {
     Request.findById(req.params.id)
         .exec(function(err, request) {
             if (err) { return next(err); }
@@ -145,26 +69,81 @@ exports.get_details = function(req, res, next) {
                 var err = new Error('Request not found');
                 err.status = 404;
                 return next(err);
-            } 
-            res.json(success({data:request}));
+            } else if (req.user.profile_id != request.student && req.user.profile_id != request.tutor && req.user.role != "admin") {
+                var err = new Error('Cannot access this resource.');
+                err.status = 403;
+                return next(err);
+            } else {
+                res.json(success({data:request}));
+            }
         });
 };
 
-exports.apply_for_request = function(req, res, next) {
+
+exports.create_request = function(req, res, next) {
+    var request = new Request()
+    request.student = mongoose.Types.ObjectId(req.user.profile_id);
+    request.tutor = mongoose.Types.ObjectId(req.params.id);
+    request.status = "pending";
+    request.subject = req.body.subject;
+
+    request.save()
+        .then(request => {
+            res.status(200).json(success({data:request}));
+        })
+        .catch(err => {
+            res.status(400).send('creating failed');
+    });
+};
+
+
+exports.set_pending = function(req, res, next) {
     Request.findById(req.params.id, function(err, request) {
         if (!request) {
             res.status(404).send("Request not found.");
-        } else if (request.tutors_applied.includes(req.user._id)) {
-            res.status(400).send("Already applied for this request.");
         } else {
-            request.tutors_applied.push(req.user._id)
+            request.status = "pending";
             request.save()
                 .then(request => {
-                    res.status(200).json(success({data:request}, "Application successful"));
+                    res.status(200).json(success({data:request}, "Set to pending SUCCESS"));
                 })
                 .catch(err => {
-                    res.status(400).send('Application failed');
+                    res.status(400).send('Set to pending FAILED');
                 });
         }
-    });
+    })
+};
+
+exports.set_accepted = function(req, res, next) {
+    Request.findById(req.params.id, function(err, request) {
+        if (!request) {
+            res.status(404).send("Request not found.");
+        } else {
+            request.status = "accepted";
+            request.save()
+                .then(request => {
+                    res.status(200).json(success({data:request}, "Set to accepted SUCCESS"));
+                })
+                .catch(err => {
+                    res.status(400).send('Set to accepted FAILED');
+                });
+        }
+    })
+};
+
+exports.set_completed = function(req, res, next) {
+    Request.findById(req.params.id, function(err, request) {
+        if (!request) {
+            res.status(404).send("Request not found.");
+        } else {
+            request.status = "completed";
+            request.save()
+                .then(request => {
+                    res.status(200).json(success({data:request}, "Set to completed SUCCESS"));
+                })
+                .catch(err => {
+                    res.status(400).send('Set to completed FAILED');
+                });
+        }
+    })
 };
