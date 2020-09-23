@@ -9,9 +9,7 @@ var requireAuth = passport.authenticate('jwt', {session: false})
 var requireLogin = passport.authenticate('local', {session: false});
 
 router.get('/list/all', user_controller.user_list);
-router.post('/create/student', user_controller.user_create_student);
-router.post('/create/tutor', user_controller.user_create_tutor);
-router.post('/create/admin', user_controller.user_create_admin);
+router.post('/create', user_controller.user_create);
 router.post('/delete/:id', requireAuth, user_controller.user_delete);
 router.post('/update/:id', requireAuth, user_controller.user_update);
 router.get('/:id', user_controller.user_detail);

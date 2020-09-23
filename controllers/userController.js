@@ -13,35 +13,35 @@ exports.user_list = function(req, res, next) {
         });
 };
 
-exports.user_create_student = function(req, res, next) {
-    var student = new User();
+exports.user_create = function(req, res, next) {
+    var usr = new User();
 
     // Login Info
-    student.email = req.body.email;
-    student.password1 = req.body.password1;
-    student.password2 = req.body.password2;
-    student.role = "student"
+    usr.email = req.body.email;
+    usr.password1 = req.body.password1;
+    usr.password2 = req.body.password2;
+    usr.role = req.body.role;
 
     // Name
-    student.name = req.body.name;
+    usr.name = req.body.name;
 
     // Check missing fields
-    if(!student.email) {return res.status(422).send({error: 'You must enter an email address'});}
-    if(!student.password1) {return res.status(422).send({error: 'You must enter a password'});}
-    if(!student.password2) {return res.status(422).send({error: 'You must confirm your password'})}
-    if(student.password1 !== student.password2) {return res.status(422).send({error: 'Passwords do not match'})}
-    if(!student.name) {return res.status(422).send({error: 'You must enter a name'});}
+    if(!usr.email) {return res.status(422).send({error: 'You must enter an email address'});}
+    if(!usr.password1) {return res.status(422).send({error: 'You must enter a password'});}
+    if(!usr.password2) {return res.status(422).send({error: 'You must confirm your password'})}
+    if(usr.password1 !== usr.password2) {return res.status(422).send({error: 'Passwords do not match'})}
+    if(!usr.name) {return res.status(422).send({error: 'You must enter a name'});}
 
-    User.findOne({email: student.email}, function(err, existingUser){
+    User.findOne({email: usr.email}, function(err, existingUser){
         if(err) {return next(err);}
         if(existingUser) {return res.status(422).send({error: 'That email address is already in use'});}
 
         idschema.find({name:"Student"})
-        .exec(function(err, studentcntr) {
-            studentcntr[0].count += 1;
-            studentcntr[0].save()
-            student.user_id = studentcntr[0].count;
-            student.save(function(err, user) {
+        .exec(function(err, usrcntr) {
+            usrcntr[0].count += 1;
+            usrcntr[0].save()
+            usr.user_id = usrcntr[0].count;
+            usr.save(function(err, user) {
                 if (err) {return next(err);}
                 var userInfo = setUserInfo(user);
                 res.status(201).json({
@@ -50,83 +50,6 @@ exports.user_create_student = function(req, res, next) {
                 })
             })
         });
-    });
-};
-
-
-exports.user_create_tutor = function(req, res, next) {
-    var tutor = new User();
-
-    // Login Info
-    tutor.email = req.body.email;
-    tutor.password1 = req.body.password1;
-    tutor.password2 = req.body.password2;
-    tutor.role = "tutor"
-
-    // Name
-    tutor.name = req.body.name;
-   
-
-    // Check missing fields
-    if(!tutor.email) {return res.status(422).send({error: 'You must enter an email address'});}
-    if(!tutor.password1) {return res.status(422).send({error: 'You must enter a password'});}
-    if(!tutor.password2) {return res.status(422).send({error: 'You must confirm your password'})}
-    if(tutor.password1 !== tutor.password2) {return res.status(422).send({error: 'Passwords do not match'})}
-    if(!tutor.name) {return res.status(422).send({error: 'You must enter a name'});}
-
-    User.findOne({email: tutor.email}, function(err, existingUser){
-        if(err) {return next(err);}
-        if(existingUser) {return res.status(422).send({error: 'That email address is already in use'});}
-
-        idschema.find({name:"Tutor"})
-        .exec(function(err, tutorcntr) {
-            tutorcntr[0].count += 1;
-            tutorcntr[0].save()
-            tutor.user_id = tutorcntr[0].count;
-            tutor.save(function(err, user) {
-                if (err) {return next(err);}
-                var userInfo = setUserInfo(user);
-                res.status(201).json({
-                    token: 'JWT ' + generateToken(userInfo),
-                    user: userInfo
-                })
-            })
-        });
-    });
-};
-
-
-exports.user_create_admin = function(req, res, next) {
-    var admin = new User();
-
-    // Login Info
-    admin.email = req.body.email;
-    admin.password1 = req.body.password1;
-    admin.password2 = req.body.password2;
-    admin.role = "admin";
-
-    // Name
-    admin.name = req.body.name;
-   
-    // Check missing fields
-    if(!admin.email) {return res.status(422).send({error: 'You must enter an email address'});}
-    if(!admin.password1) {return res.status(422).send({error: 'You must enter a password'});}
-    if(!admin.password2) {return res.status(422).send({error: 'You must confirm your password'})}
-    if(admin.password1 !== admin.password2) {return res.status(422).send({error: 'Passwords do not match'})}
-    if(!admin.name) {return res.status(422).send({error: 'You must enter a name'});}
-
-    User.findOne({email: admin.email}, function(err, existingUser){
-        if(err) {return next(err);}
-        if(existingUser) {return res.status(422).send({error: 'That email address is already in use'});}
-
-        admin.save(function(err, user) {
-            if (err) {return next(err);}
-            var userInfo = setUserInfo(user);
-            res.status(201).json({
-                token: 'JWT ' + generateToken(userInfo),
-                user: userInfo
-            })
-        })
     });
 };
 
