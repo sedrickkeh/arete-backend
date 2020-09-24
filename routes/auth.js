@@ -10,6 +10,8 @@ var requireLogin = passport.authenticate('local', {session: false});
 
 router.get('/', requireAuth, auth_controller.login_status);
 router.post('/login', requireLogin, auth_controller.login);
-router.post('/register', user_controller.user_create);
+router.post('/register/student', user_controller.user_create_student);
+router.post('/register/tutor', user_controller.user_create_tutor);
+router.post('/register/admin', user_controller.user_create_admin);
 
 module.exports = router;
